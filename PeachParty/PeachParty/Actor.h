@@ -10,6 +10,7 @@ class Actor: public GraphObject{
         Actor(int name, int x, int y); // do you multiply this by 16?
         virtual void doSomething() = 0;//TODO: should this be a pure virtual function?
         bool isInactive();
+        void setInactive();
         
         
     private:
@@ -20,12 +21,12 @@ class Avatar: public Actor{
     const bool WAITING_TO_ROLL = 0;
     const bool WALKING = 1;
 public:
-    
-    Avatar(int name, int x, int y, int playerNumber);
+    Avatar(int name, int x, int y, int playerNumber); //Name should be YOSHI or PEACH
     virtual void doSomething();
 private:
-    int ticks_to_move;
-    bool state;
+    int m_ticks_to_move;
+    bool m_state;
+    int m_playerNumber;
     
 };
 
