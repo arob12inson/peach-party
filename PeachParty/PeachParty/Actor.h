@@ -10,7 +10,7 @@ class StudentWorld;
 class Actor: public GraphObject{
     public:
         Actor(int name, int x, int y, StudentWorld* gameboard); // do you multiply this by 16?
-        virtual void doSomething() = 0;//TODO: should this be a pure virtual function?
+        virtual void doSomething() {};//TODO: should this be a pure virtual function?
         bool isInactive();
         void setInactive();
         StudentWorld* getBoard();
