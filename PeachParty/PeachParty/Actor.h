@@ -13,6 +13,7 @@ class Actor: public GraphObject{
         virtual void doSomething() = 0;//TODO: should this be a pure virtual function?
         bool isInactive();
         void setInactive();
+        StudentWorld* getBoard();
         
         
     private:
@@ -23,13 +24,13 @@ class Actor: public GraphObject{
 class Avatar: public Actor{
     const bool WAITING_TO_ROLL = 0;
     const bool WALKING = 1;
-public:
-    Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber); //Name should be YOSHI or PEACH
-    virtual void doSomething();
-private:
-    int m_ticks_to_move;
-    bool m_state;
-    int m_playerNumber;
+    public:
+        Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber); //Name should be YOSHI or PEACH
+        virtual void doSomething();
+    private:
+        int m_ticks_to_move;
+        bool m_state;
+        int m_playerNumber;
     
 };
 
