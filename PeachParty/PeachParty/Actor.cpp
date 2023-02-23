@@ -43,18 +43,44 @@ bool MovingActor::getState(){
     return m_state;
 }
 bool MovingActor::validDirection(){
-    int dir = getDirection(); //
+    int dir = getDirection();
     switch (dir){
-        case left:
-            if (getX() == 0){
+        case left: // is Y up and down?
+            if (getX()/16 == 0) //See if it is at the furthest left (protect against undefined behavior)
                 return false;
-            }
-            else if (Board())// See if there is a valid spot in the board one to the left (x-16)
+            else if (Board()->board().getContentsOf(getX()/16 - 1, getY()/16) != Board::empty)// See if there is a valid spot in the board one to the left
+                return true;
+            else
+                return false;
+            break;
+        case right:
+            if (getX()/16 == 15)//See if it is at the furthest right (protect against undefined behavior)
+                return false;
+            else if (Board()->board().getContentsOf(getX()/16 + 1, getY()/16) != Board::empty)// See if there is a valid spot in the board one to the right
+                return true;
+            else
+                return false;
+            break;
+        case up:
+            if (getY()/16 == 15)//See if it is at the furthest up (protect against undefined behavior)
+                return false;
+            else if (Board()->board().getContentsOf(getX()/16, getY()/16 + 1) != Board::empty)// See if there is a valid spot in the board one above
+                return true;
+            else
+                return false;
+            break;
+        case down:
+            if (getY()/16 == 0)//See if it is at the furthest down (protect against undefined behavior)
+                return false;
+            else if (Board()->board().getContentsOf(getX()/16, getY()/16 - 1) != Board::empty)// See if there is a valid spot in the board one below (x-16)
+                return true;
+            else
+                return false;
             break;
     }
-    if (getDirection() == left){}
     
-    return true;
+    
+    return true;//Hypothetically, this should never run
 }
 
 //Avatar Definition
@@ -66,7 +92,7 @@ MovingActor(name, x, y, gameboard)
     setTicks(0);
 }
 
-void Avatar::doSomething(){//TODO: Do i need the virtual keyword in here?
+void Avatar::doSomething(){
     if (getState() == WAITING){
         if (Board()->getAction(m_playerNumber) != ACTION_NONE){
             if (Board()->getAction(m_playerNumber) == ACTION_ROLL){

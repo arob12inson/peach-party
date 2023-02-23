@@ -72,3 +72,7 @@ int StudentWorld::move()
 void StudentWorld::cleanUp()
 {
 }
+
+Board& StudentWorld::board(){
+    return m_board;
+}

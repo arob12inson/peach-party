@@ -17,7 +17,8 @@ public:
     virtual int init();
     virtual int move();
     virtual void cleanUp();
-
+    Board& board();//will this cause performance issues? Pointer vs reference?
+    
 private:
     Board m_board;
     std::vector<Actor*> m_actors;
