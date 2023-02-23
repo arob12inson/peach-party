@@ -38,7 +38,7 @@ int StudentWorld::init()
             int height = j*SPRITE_HEIGHT;
             
             switch (ge){
-                case Board::empty:
+                case Board::empty://TODO: Put cases for each board type
                     break;
                 case Board::player://allocating players
                     peach = new Avatar(IID_PEACH, width, height, this, 1);
