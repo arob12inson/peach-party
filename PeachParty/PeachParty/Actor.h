@@ -13,7 +13,7 @@ class Actor: public GraphObject{
         virtual void doSomething() {};//TODO: should this be a pure virtual function?
         bool isInactive();
         void setInactive();
-        StudentWorld* getBoard();
+        StudentWorld* Board();
         
         
     private:
@@ -33,6 +33,7 @@ public:
     void setState(bool state);
     int getTicks();
     bool getState();
+    bool validDirection();
     
 private:
     int m_ticks_to_move;

@@ -52,14 +52,6 @@ int StudentWorld::init()
 
         }
     }
-//    m_board->loadBoard(assetPath());
-//    for (int i = 0; i < BOARD_HEIGHT; i++){
-//        for (int j = 0; j < BOARD_WIDTH; j++){
-//            if (m_board->getContentsOf(i, j) != Board::empty){
-//
-//            }
-//        }
-//    }
     startCountdownTimer(99);
     return GWSTATUS_CONTINUE_GAME;
 }

@@ -18,7 +18,7 @@ void Actor::setInactive(){
     inactive = true;
 }
 
-StudentWorld* Actor::getBoard(){
+StudentWorld* Actor::Board(){
     return m_gameboard;
 }
 
@@ -42,6 +42,20 @@ int MovingActor::getTicks(){
 bool MovingActor::getState(){
     return m_state;
 }
+bool MovingActor::validDirection(){
+    int dir = getDirection(); //
+    switch (dir){
+        case left:
+            if (getX() == 0){
+                return false;
+            }
+            else if (Board())// See if there is a valid spot in the board one to the left (x-16)
+            break;
+    }
+    if (getDirection() == left){}
+    
+    return true;
+}
 
 //Avatar Definition
 Avatar::Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber):
@@ -54,8 +68,8 @@ MovingActor(name, x, y, gameboard)
 
 void Avatar::doSomething(){//TODO: Do i need the virtual keyword in here?
     if (getState() == WAITING){
-        if (getBoard()->getAction(m_playerNumber) != ACTION_NONE){
-            if (getBoard()->getAction(m_playerNumber) == ACTION_ROLL){
+        if (Board()->getAction(m_playerNumber) != ACTION_NONE){
+            if (Board()->getAction(m_playerNumber) == ACTION_ROLL){
                 int die_roll = (rand() % 10) + 1;//generate random integer from 1-10 inclusive
                 setTicks(die_roll * 8);
                 setState(WALKING);
