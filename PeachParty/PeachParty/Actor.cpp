@@ -29,6 +29,7 @@ Actor(name, x, y, gameboard)
 {
     m_state = WAITING;
     m_ticks_to_move = 0;
+    m_traveling_direction = 0;
 }
 void MovingActor::setTicks(int ticks){
     m_ticks_to_move = ticks;
@@ -36,15 +37,21 @@ void MovingActor::setTicks(int ticks){
 void MovingActor::setState(bool state){
     m_state = state;
 }
+void MovingActor::setTravelDirection(int d){
+    m_traveling_direction = d;
+}
 int MovingActor::getTicks(){
     return m_ticks_to_move;
 }
 bool MovingActor::getState(){
     return m_state;
 }
+int MovingActor::getTravelDirection(){
+    return m_traveling_direction;
+}
 bool MovingActor::validDirection(){
-    int dir = getDirection();
-    switch (dir){
+
+    switch (m_traveling_direction){//TODO: Update with constants instead of 16
         case left: // is Y up and down?
             if (getX()/16 == 0) //See if it is at the furthest left (protect against undefined behavior)
                 return false;
@@ -81,6 +88,23 @@ bool MovingActor::validDirection(){
     
     
     return true;//Hypothetically, this should never run
+}
+void MovingActor::changeDirections(){ //TODO: Overload this function with one that takes a parameter of where to go
+    if (m_traveling_direction == left || m_traveling_direction == right){
+        setDirection(right);
+        m_traveling_direction = up;
+        if (validDirection() == false){
+            m_traveling_direction = down;
+        }
+    }
+    else if (m_traveling_direction == up || m_traveling_direction == down){
+        setDirection(right);
+        m_traveling_direction = right;
+        if (validDirection() == false){
+            setDirection(left);
+            m_traveling_direction = left;
+        }
+    }
 }
 
 //Avatar Definition

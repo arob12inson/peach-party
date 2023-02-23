@@ -31,13 +31,18 @@ public:
     virtual void doSomething() {};
     void setTicks(int ticks);
     void setState(bool state);
+    void setTravelDirection(int d);
     int getTicks();
     bool getState();
+    int getTravelDirection();
+    
     bool validDirection();
+    void changeDirections();
     
 private:
     int m_ticks_to_move;
     bool m_state;
+    int m_traveling_direction;
 };
 
 class Avatar: public MovingActor{
