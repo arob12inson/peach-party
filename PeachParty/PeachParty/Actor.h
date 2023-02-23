@@ -23,31 +23,28 @@ class Actor: public GraphObject{
 };
 
 class MovingActor: public Actor{
-protected:
-    const bool WAITING = 0;
-    const bool WALKING = 1;
-public:
-    MovingActor(int name, int x, int y, StudentWorld* gameboard);
-    virtual void doSomething() {};
-    void setTicks(int ticks);
-    void setState(bool state);
-    void setTravelDirection(int d);
-    int getTicks();
-    bool getState();
-    int getTravelDirection();
-    
-    bool validDirection();
-    void changeDirections();
-    
-private:
-    int m_ticks_to_move;
-    bool m_state;
-    int m_traveling_direction;
+    protected:
+        const bool WAITING = 0;
+        const bool WALKING = 1;
+    public:
+        MovingActor(int name, int x, int y, StudentWorld* gameboard);
+        virtual void doSomething() {};
+        void setTicks(int ticks);
+        void setState(bool state);
+        void setTravelDirection(int d);
+        int getTicks();
+        bool getState();
+        int getTravelDirection();
+        bool validDirection();
+        void changeDirections();
+        
+    private:
+        int m_ticks_to_move;
+        bool m_state;
+        int m_traveling_direction;
 };
 
 class Avatar: public MovingActor{
-//    const bool WAITING_TO_ROLL = 0;
-//    const bool WALKING = 1;
     public:
         Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber); //Name should be YOSHI or PEACH
         virtual void doSomething();

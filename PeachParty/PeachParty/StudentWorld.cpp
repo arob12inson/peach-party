@@ -63,6 +63,8 @@ int StudentWorld::move()
 
     setGameStatText("Game will end in a few seconds");
     
+    peach->doSomething();
+    
     if (timeRemaining() <= 0)
 		return GWSTATUS_NOT_IMPLEMENTED;
     

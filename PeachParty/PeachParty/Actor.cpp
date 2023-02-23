@@ -2,6 +2,8 @@
 #include "StudentWorld.h"
 #include <ctime> //TODO: How do we generate a random number
 #include <cstdlib>
+#include <cassert>
+
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
 //Actor definitions
@@ -50,12 +52,12 @@ int MovingActor::getTravelDirection(){
     return m_traveling_direction;
 }
 bool MovingActor::validDirection(){
-
+    
     switch (m_traveling_direction){//TODO: Update with constants instead of 16
         case left: // is Y up and down?
-            if (getX()/16 == 0) //See if it is at the furthest left (protect against undefined behavior)
+            if (getX() == 0) //See if it is at the furthest left (protect against undefined behavior)
                 return false;
-            else if (Board()->board().getContentsOf(getX()/16 - 1, getY()/16) != Board::empty)// See if there is a valid spot in the board one to the left
+            else if (Board()->board().getContentsOf((getX() - 16)/16, getY()/16) != Board::empty)// See if there is a valid spot in the board one to the left
                 return true;
             else
                 return false;
@@ -77,11 +79,15 @@ bool MovingActor::validDirection(){
                 return false;
             break;
         case down:
-            if (getY()/16 == 0)//See if it is at the furthest down (protect against undefined behavior)
+            if (getY() == 0)//See if it is at the furthest down (protect against undefined behavior
                 return false;
-            else if (Board()->board().getContentsOf(getX()/16, getY()/16 - 1) != Board::empty)// See if there is a valid spot in the board one below (x-16)
+            else if (Board()->board().getContentsOf(getX()/16, (getY() - 16)/16) != Board::empty)// See if there is a valid spot in the board one below (x-16)
+            {
+                
                 return true;
+            }
             else
+                
                 return false;
             break;
     }
@@ -118,8 +124,9 @@ MovingActor(name, x, y, gameboard)
 
 void Avatar::doSomething(){
     if (getState() == WAITING){
-        if (Board()->getAction(m_playerNumber) != ACTION_NONE){
-            if (Board()->getAction(m_playerNumber) == ACTION_ROLL){
+        int action = Board()->getAction(m_playerNumber);
+        if (action != ACTION_NONE){
+            if (action == ACTION_ROLL){
                 int die_roll = (rand() % 10) + 1;//generate random integer from 1-10 inclusive
                 setTicks(die_roll * 8);
                 setState(WALKING);
@@ -134,7 +141,27 @@ void Avatar::doSomething(){
     }
     
     if (getState() == WALKING){
-        
+        if (validDirection() == false){
+            std::cerr << "I returned false at " << std::to_string(getX()) << ", " << std::to_string(getY()) << std::endl;
+            changeDirections();
+        }
+        switch (getTravelDirection()) {
+            case left:
+                moveTo(getX()-2, getY());//Move two pixels in the walk direction
+                break;
+            case right:
+                moveTo(getX()+2, getY());//Move two pixels in the walk direction
+                break;
+            case up:
+                moveTo(getX(), getY()+2);//Move two pixels in the walk direction
+
+                break;
+            case down:
+                moveTo(getX(), getY()-2);//Move two pixels in the walk direction
+                break;
+        }
+        setTicks(getTicks()-1);//Decrement the ticks_to_move count by 1.
+        if (getTicks() == 0)//If ticks_to_move is 0 then:
+            setState(WAITING);//Change the Avatar's state to the waiting to roll state.
     }
 }
-
