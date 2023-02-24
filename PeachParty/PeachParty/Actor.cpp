@@ -57,14 +57,20 @@ bool MovingActor::validDirection(){
         case left: // is Y up and down?
             if (getX() == 0) //See if it is at the furthest left (protect against undefined behavior)
             {
-                std::cerr << "1" << std::endl;
                 return false;
             }
-            else if (Board()->board().getContentsOf((getX() - 16)/16, getY()/16) != /*TODO: Some undefined behavior here*/ Board::empty)// See if there is a valid spot in the board one to the left
+            //TODO: Need case when it is at the end of a square vs not at the end of the square (Do one where getX() % 16 == 0, then one where it isn't
+            //if getX() % 16 == 0, check if (getX()-16)/16 has a square
+            //if getX() % 16 != 0, check if (getX()-16) has a square (integer division will make it check the box after
+            else if (getX() % 16 == 0 && Board()->board().getContentsOf((getX()-16)/16, getY()/16) != Board::empty){
                 return true;
+            }
+            else if (getX() % 16 != 0 && Board()->board().getContentsOf(getX()/16, getY()/16) != Board::empty)// See if there is a valid spot in the board one to the left
+            {
+                return true;
+            }
             else
             {
-                std::cerr << "2" << std::endl;
                 return false;
             }
             break;
@@ -87,9 +93,11 @@ bool MovingActor::validDirection(){
         case down:
             if (getY() == 0)//See if it is at the furthest down (protect against undefined behavior
                 return false;
-            else if (Board()->board().getContentsOf(getX()/16, (getY() - 16)/16) != Board::empty)// See if there is a valid spot in the board one below (x-16)
+            else if (getY() % 16 == 0 && Board()->board().getContentsOf(getX()/16, (getY()-16)/16) != Board::empty){
+                return true;
+            }
+            else if (getY() % 16 != 0 && Board()->board().getContentsOf(getX()/16, getY()/16) != Board::empty)// See if there is a valid spot in the board one to the left
             {
-                
                 return true;
             }
             else
