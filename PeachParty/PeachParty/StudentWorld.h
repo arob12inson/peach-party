@@ -18,6 +18,7 @@ public:
     virtual int move();
     virtual void cleanUp();
     Board& board();//will this cause performance issues? Pointer vs reference?
+    virtual ~StudentWorld();
     
 private:
     Board m_board;

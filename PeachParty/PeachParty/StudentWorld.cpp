@@ -45,8 +45,6 @@ int StudentWorld::init()
                     yoshi = new Avatar(IID_YOSHI, width, height, this, 2);
                     m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
                     break;
-                    //TODO: Add coinSquare
-                //blue_coin_square, red_coin_square, up_dir_square, down_dir_square, left_dir_square, right_dir_square, event_square, bank_square, star_square, bowser, boo
                 case Board::blue_coin_square:
                     m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
                     break;
@@ -82,11 +80,7 @@ int StudentWorld::init()
                     m_actors.push_back(new MovingActor(IID_BOO, width, height, this));
                     m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
                     break;
-//                default:
-//                    m_actors.push_back(new Actor(IID_BLUE_COIN_SQUARE, width, height, this));
-
             }
-
         }
     }
     startCountdownTimer(99);
@@ -110,8 +104,20 @@ int StudentWorld::move()
 
 void StudentWorld::cleanUp()
 {
+    delete peach;
+    delete yoshi;
+    vector<Actor*>::iterator it = m_actors.begin(); //TODO: Why don't you need an std::vector?
+    for (; it != m_actors.end(); it++){
+        delete *it;
+    }
+    
 }
 
 Board& StudentWorld::board(){
     return m_board;
 }
+
+void StudentWorld::~StudentWorld(){
+    cleanUp();
+}
+
