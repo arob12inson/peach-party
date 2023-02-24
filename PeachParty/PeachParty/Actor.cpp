@@ -56,11 +56,17 @@ bool MovingActor::validDirection(){
     switch (m_traveling_direction){//TODO: Update with constants instead of 16
         case left: // is Y up and down?
             if (getX() == 0) //See if it is at the furthest left (protect against undefined behavior)
+            {
+                std::cerr << "1" << std::endl;
                 return false;
-            else if (Board()->board().getContentsOf((getX() - 16)/16, getY()/16) != Board::empty)// See if there is a valid spot in the board one to the left
+            }
+            else if (Board()->board().getContentsOf((getX() - 16)/16, getY()/16) != /*TODO: Some undefined behavior here*/ Board::empty)// See if there is a valid spot in the board one to the left
                 return true;
             else
+            {
+                std::cerr << "2" << std::endl;
                 return false;
+            }
             break;
         case right:
             if (getX()/16 == 15)//See if it is at the furthest right (protect against undefined behavior)
@@ -127,6 +133,7 @@ void Avatar::doSomething(){
         int action = Board()->getAction(m_playerNumber);
         if (action != ACTION_NONE){
             if (action == ACTION_ROLL){
+                srand(time(0));//TODO: Figure out how to set random time
                 int die_roll = (rand() % 10) + 1;//generate random integer from 1-10 inclusive
                 setTicks(die_roll * 8);
                 setState(WALKING);
@@ -165,3 +172,22 @@ void Avatar::doSomething(){
             setState(WAITING);//Change the Avatar's state to the waiting to roll state.
     }
 }
+
+//SquareClass
+Square::Square(int name, int x, int y, StudentWorld* gameboard):
+Actor(name, x, y, gameboard)
+{
+//    m_isAlive = ALIVE;//TODO: how does this overlap with the active/inactive function for base Actor class?
+}
+
+void Square::doSomething(){//TODO: eventually declare as pure virtual
+    
+}
+
+//bool Square::getAlive(){
+//    return m_isAlive;
+//}
+//
+//void Square::setAlive(){
+//    m_isAlive = !m_isAlive;
+//}

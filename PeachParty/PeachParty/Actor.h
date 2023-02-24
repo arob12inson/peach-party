@@ -53,4 +53,18 @@ class Avatar: public MovingActor{
     
 };
 
+class Square: public Actor{
+protected:
+//    const bool ALIVE = true;
+//    const bool DEAD = false;
+public:
+    Square(int name, int x, int y, StudentWorld* gameboard);
+    virtual void doSomething();
+//    bool getAlive();
+//    void setAlive();
+    
+private:
+//    bool m_isalive;
+};
+
 #endif // ACTOR_H_
