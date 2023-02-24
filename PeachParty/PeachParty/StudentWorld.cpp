@@ -43,10 +43,47 @@ int StudentWorld::init()
                 case Board::player://allocating players
                     peach = new Avatar(IID_PEACH, width, height, this, 1);
                     yoshi = new Avatar(IID_YOSHI, width, height, this, 2);
+                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
                     break;
                     //TODO: Add coinSquare
-                default:
-                    m_actors.push_back(new Actor(IID_BLUE_COIN_SQUARE, width, height, this));
+                //blue_coin_square, red_coin_square, up_dir_square, down_dir_square, left_dir_square, right_dir_square, event_square, bank_square, star_square, bowser, boo
+                case Board::blue_coin_square:
+                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
+                    break;
+                case Board::red_coin_square:
+                    m_actors.push_back(new CoinSquare(IID_RED_COIN_SQUARE, width, height, this, -3));
+                    break;
+                case Board::up_dir_square:
+                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, 90));
+                    break;
+                case Board::down_dir_square:
+                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, 270));
+                    break;
+                case Board::left_dir_square:
+                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, 180));
+                    break;
+                case Board::right_dir_square:
+                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, 0));
+                    break;
+                case Board::event_square:
+                    m_actors.push_back(new Square(IID_EVENT_SQUARE, width, height, this));
+                    break;
+                case Board::bank_square:
+                    m_actors.push_back(new Square(IID_BANK_SQUARE, width, height, this));
+                    break;
+                case Board::star_square:
+                    m_actors.push_back(new Square(IID_STAR_SQUARE, width, height, this));
+                    break;
+                case Board::bowser:
+                    m_actors.push_back(new MovingActor(IID_BOWSER, width, height, this));
+                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
+                    break;
+                case Board::boo:
+                    m_actors.push_back(new MovingActor(IID_BOO, width, height, this));
+                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
+                    break;
+//                default:
+//                    m_actors.push_back(new Actor(IID_BLUE_COIN_SQUARE, width, height, this));
 
             }
 

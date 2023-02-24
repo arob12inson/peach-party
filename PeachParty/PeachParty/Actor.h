@@ -9,7 +9,7 @@ class StudentWorld;
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 class Actor: public GraphObject{
     public:
-        Actor(int name, int x, int y, StudentWorld* gameboard);
+        Actor(int name, int x, int y, StudentWorld* gameboard, int dir = right, int depth = 0, double size = 1.0);
         virtual void doSomething() {};//TODO: should this be a pure virtual function?
         bool isInactive();
         void setInactive();
@@ -54,17 +54,32 @@ class Avatar: public MovingActor{
 };
 
 class Square: public Actor{
-protected:
-//    const bool ALIVE = true;
-//    const bool DEAD = false;
-public:
-    Square(int name, int x, int y, StudentWorld* gameboard);
-    virtual void doSomething();
-//    bool getAlive();
-//    void setAlive();
-    
-private:
-//    bool m_isalive;
+    protected:
+    //    const bool ALIVE = true;
+    //    const bool DEAD = false;
+    public:
+        Square(int name, int x, int y, StudentWorld* gameboard, int dir = right, int dept = 1, double size = 1.0);
+        virtual void doSomething();
+    //    bool getAlive();
+    //    void setAlive();
+        
+    private:
+    //    bool m_isalive;
+};
+
+class CoinSquare: public Actor{
+    protected:
+    //    const bool ALIVE = true;
+    //    const bool DEAD = false;
+    public:
+        CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake);
+        virtual void doSomething();
+    //    bool getAlive();
+    //    void setAlive();
+        
+    private:
+    //    bool m_isalive;
+        int m_coinAmount;
 };
 
 #endif // ACTOR_H_

@@ -7,7 +7,7 @@
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
 //Actor definitions
-Actor::Actor(int name, int x, int y, StudentWorld* gameboard): GraphObject(name, x, y){
+Actor::Actor(int name, int x, int y, StudentWorld* gameboard, int dir, int depth, double size): GraphObject(name, x, y, dir, depth, size){
     inactive = false;
     m_gameboard = gameboard;
 }
@@ -177,13 +177,26 @@ void Avatar::doSomething(){
 }
 
 //SquareClass
-Square::Square(int name, int x, int y, StudentWorld* gameboard):
-Actor(name, x, y, gameboard)
-{
-//    m_isAlive = ALIVE;//TODO: how does this overlap with the active/inactive function for base Actor class?
+Square::Square(int name, int x, int y, StudentWorld* gameboard, int dir, int depth, double size) : Actor(name, x, y, gameboard, dir, depth, size){
+    
+}
+void Square::doSomething(){//TODO: eventually declare as pure virtual
+    
 }
 
-void Square::doSomething(){//TODO: eventually declare as pure virtual
+//CoinSquare Class
+CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake):
+Actor(name, x, y, gameboard, right, 1)
+{
+//    m_isAlive = ALIVE;//TODO: how does this overlap with the active/inactive function for base Actor class?
+    
+    m_coinAmount = giveOrTake;
+}
+
+void CoinSquare::doSomething(){//TODO: eventually declare as pure virtual
+    if (isInactive() == true){
+        return;
+    }
     
 }
 
