@@ -117,7 +117,7 @@ Board& StudentWorld::board(){
     return m_board;
 }
 
-void StudentWorld::~StudentWorld(){
+StudentWorld::~StudentWorld(){
     cleanUp();
 }
 
