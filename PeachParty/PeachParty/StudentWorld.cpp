@@ -17,7 +17,6 @@ StudentWorld::StudentWorld(string assetPath)
     peach = nullptr;
     yoshi = nullptr;
 }
-
 int StudentWorld::init()
 {
     //load the correct board
@@ -86,7 +85,6 @@ int StudentWorld::init()
     startCountdownTimer(99);
     return GWSTATUS_CONTINUE_GAME;
 }
-
 int StudentWorld::move()
 {
     // This code is here merely to allow the game to build, run, and terminate after you hit ESC.
@@ -101,7 +99,6 @@ int StudentWorld::move()
     
 	return GWSTATUS_CONTINUE_GAME;
 }
-
 void StudentWorld::cleanUp()
 {
     delete peach;
@@ -112,12 +109,12 @@ void StudentWorld::cleanUp()
     }
     
 }
-
-Board& StudentWorld::board(){
+Board& StudentWorld::board()
+{
     return m_board;
 }
-
-StudentWorld::~StudentWorld(){
+StudentWorld::~StudentWorld()
+{
     cleanUp();
 }
 
