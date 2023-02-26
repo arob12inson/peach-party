@@ -40,6 +40,9 @@ class MovingActor: public Actor{
         int getTravelDirection();
         bool validDirection();
         void changeDirections();
+        void changeDirections(int d);
+        bool isOnTopOfSquare();
+        bool isDirectionalSquare(int& dir);
         
     private:
         int m_ticks_to_move;
@@ -58,30 +61,18 @@ class Avatar: public MovingActor{
 
 class Square: public Actor{
     protected:
-    //    const bool ALIVE = true;
-    //    const bool DEAD = false;
     public:
         Square(int name, int x, int y, StudentWorld* gameboard, int dir = right, int dept = 1, double size = 1.0);
         virtual void doSomething();
-    //    bool getAlive();
-    //    void setAlive();
-        
     private:
-    //    bool m_isalive;
 };
 
 class CoinSquare: public Actor{
     protected:
-    //    const bool ALIVE = true;
-    //    const bool DEAD = false;
     public:
         CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake);
         virtual void doSomething();
-    //    bool getAlive();
-    //    void setAlive();
-        
     private:
-    //    bool m_isalive;
         int m_coinAmount;
 };
 

@@ -1,8 +1,5 @@
 #include "Actor.h"
 #include "StudentWorld.h"
-//#include <ctime> //TODO: How do we generate a random number
-//#include <cstdlib>
-#include <cassert>
 
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
@@ -12,15 +9,12 @@ Actor::Actor(int name, int x, int y, StudentWorld* gameboard, int dir, int depth
     m_gameboard = gameboard;
     impactable = false;
 }
-
 bool Actor::isInactive(){
     return inactive;
 }
-
 void Actor::setInactive(){
     inactive = true;
 }
-
 StudentWorld* Actor::Board(){
     return m_gameboard;
 }
@@ -130,6 +124,31 @@ void MovingActor::changeDirections(){ //TODO: Overload this function with one th
         }
     }
 }
+void MovingActor::changeDirections(int d){
+    m_traveling_direction = d;
+}
+bool MovingActor::isOnTopOfSquare(){
+    return (getX() % 16 == 0 && getY() % 16 == 0);
+}
+bool MovingActor::isDirectionalSquare(int& dir){
+    if (Board()->board().getContentsOf(getX()/SPRITE_WIDTH, getY()/SPRITE_HEIGHT) == Board::up_dir_square){
+        dir = up;
+        return true;
+    }
+    else if (Board()->board().getContentsOf(getX()/SPRITE_WIDTH, getY()/SPRITE_HEIGHT) == Board::down_dir_square){
+        dir = down;
+        return true;
+    }
+    else if (Board()->board().getContentsOf(getX()/SPRITE_WIDTH, getY()/SPRITE_HEIGHT) == Board::right_dir_square){
+        dir = right;
+        return true;
+    }
+    else if (Board()->board().getContentsOf(getX()/SPRITE_WIDTH, getY()/SPRITE_HEIGHT) == Board::left_dir_square){
+        dir = left;
+        return true;
+    }
+    return false;
+}
 
 //Avatar Definition
 Avatar::Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber):
@@ -139,7 +158,6 @@ MovingActor(name, x, y, gameboard)
     setState(WAITING);
     setTicks(0);
 }
-
 void Avatar::doSomething(){
     if (getState() == WAITING){
         int action = Board()->getAction(m_playerNumber);
@@ -158,7 +176,18 @@ void Avatar::doSomething(){
     }
     
     if (getState() == WALKING){
-        if (validDirection() == false){
+        int x = 0;
+        if (isOnTopOfSquare() && isDirectionalSquare(x)){//If the Avatar is directly on top of a directional square3
+            changeDirections(x);
+            if(x == left){
+                setDirection(x);
+            }
+            
+        }
+        else if (false){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
+            
+        }
+        else if (validDirection() == false){//Else if the Avatar can't continue moving forward in its current direction
 //            std::cerr << "I returned false at " << std::to_string(getX()) << ", " << std::to_string(getY()) << std::endl;
             changeDirections();
         }
@@ -199,7 +228,6 @@ Actor(name, x, y, gameboard, right, 1)
     
     m_coinAmount = giveOrTake;
 }
-
 void CoinSquare::doSomething(){//TODO: eventually declare as pure virtual
     if (isInactive() == true){
         return;
@@ -207,10 +235,4 @@ void CoinSquare::doSomething(){//TODO: eventually declare as pure virtual
     
 }
 
-//bool Square::getAlive(){
-//    return m_isAlive;
-//}
-//
-//void Square::setAlive(){
-//    m_isAlive = !m_isAlive;
-//}
+
