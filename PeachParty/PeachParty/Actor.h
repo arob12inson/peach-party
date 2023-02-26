@@ -43,7 +43,8 @@ class MovingActor: public Actor{
         void changeDirections(int d);
         bool isOnTopOfSquare();
         bool isDirectionalSquare(int& dir);
-    bool isAtFork();
+        bool isAtFork();
+        bool isBacktracking(int dir);
         
     private:
         int m_ticks_to_move;
@@ -55,6 +56,7 @@ class Avatar: public MovingActor{
     public:
         Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber); //Name should be YOSHI or PEACH
         virtual void doSomething();
+        int convertAction(int keyAction);
     private:
         int m_playerNumber;
     

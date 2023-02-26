@@ -154,27 +154,33 @@ bool MovingActor::isAtFork(){
     if (!isOnTopOfSquare()){
         return false;
     }
-    
     int dir = m_traveling_direction;
     int numValidDirections = 0;
-    
-    std::list<int> directions{right, up, left, down};
-    if (m_traveling_direction >= right || m_traveling_direction < left){
-        directions.remove(m_traveling_direction + 180);
-    }
-    else {
-        directions.remove(m_traveling_direction - 180);
-    }
-    
-    for (std::list<int>::iterator it = directions.begin(); it != directions.end(); it++){
-        m_traveling_direction = *it;
-        if (validDirection()){
-            numValidDirections++;
+    int directions [4] = {right, up, left, down};
+    for (int i = 0; i < 4; i++){
+        if(isBacktracking(directions[i])){
+            directions[i] = -1;
         }
-        m_traveling_direction = dir;
+    }
+    for (int i = 0; i < 4; i++){
+        if (directions[i] != -1){
+            m_traveling_direction = directions[i];
+            if (validDirection()){
+                numValidDirections++;
+            }
+            m_traveling_direction = dir;
+        }
     }
     m_traveling_direction = dir;
     return (numValidDirections >= 2);
+}
+bool MovingActor::isBacktracking(int dir){
+    if (m_traveling_direction == right || m_traveling_direction == up){
+        return (m_traveling_direction + 180 == dir);
+    }
+    else {
+        return (m_traveling_direction - 180 == dir);
+    }
 }
 
 //Avatar Definition
@@ -201,7 +207,6 @@ void Avatar::doSomething(){
             return;
         }
     }
-    
     if (getState() == WALKING){
         int x = 0;
         if (isOnTopOfSquare() && isDirectionalSquare(x)){//TODO: make the Directional Square Class handle this (Give it a pointer to peach and yoshi )
@@ -211,30 +216,22 @@ void Avatar::doSomething(){
             }
             
         }
-//        else if (isOnTopOfSquare() && validDirection()){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
-//            int action = Board()->getAction(m_playerNumber);
-//            int td = getTravelDirection();// What to do if you're at a T intersection?
-//            if (action == ACTION_UP){
-//                if (getTravelDirection() == up){
-//
-//                }
-//            } else if (action == ACTION_DOWN){
-//                if (getTravelDirection() == down){
-//
-//                }
-//            } else if (action == ACTION_LEFT){
-//                if (getTravelDirection() == left){
-//
-//                }
-//            } else if (action == ACTION_RIGHT){
-//                if (getTravelDirection() == right){
-//
-//                }
-//            }
-//
-//        }
+        else if (isAtFork()){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
+
+            int action = convertAction(Board()->getAction(m_playerNumber));
+            int td = getTravelDirection();// What to do if you're at a T intersection?
+            if (action == -1){
+                return;
+            }
+            else if (!isBacktracking(action)){
+                setTravelDirection(action);
+                if (!validDirection()){
+                    setTravelDirection(td); //Any problems when td
+                    return;
+                }
+            }
+        }
         else if (validDirection() == false){//Else if the Avatar can't continue moving forward in its current direction
-//            std::cerr << "I returned false at " << std::to_string(getX()) << ", " << std::to_string(getY()) << std::endl;
             changeDirections();
         }
         switch (getTravelDirection()) {
@@ -257,6 +254,22 @@ void Avatar::doSomething(){
             setState(WAITING);//Change the Avatar's state to the waiting to roll state.
     }
 }
+int Avatar::convertAction(int keyAction){ //converts keyboard press to its corresponding n/e/s/w counterpart returnts -1 if didn't press a direction
+    if (keyAction == ACTION_DOWN){
+        return down;
+    }
+    else if (keyAction == ACTION_RIGHT){
+        return right;
+    }
+    else if (keyAction == ACTION_LEFT){
+        return left;
+    }
+    else if (keyAction == ACTION_UP){
+        return up;
+    }
+      
+    return -1;
+}
 
 //SquareClass
 Square::Square(int name, int x, int y, StudentWorld* gameboard, int dir, int depth, double size) : Actor(name, x, y, gameboard, dir, depth, size){
@@ -270,7 +283,6 @@ void Square::doSomething(){//TODO: eventually declare as pure virtual
 CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake):
 Actor(name, x, y, gameboard, right, 1)
 {
-//    m_isAlive = ALIVE;//TODO: how does this overlap with the active/inactive function for base Actor class?
     
     m_coinAmount = giveOrTake;
 }
