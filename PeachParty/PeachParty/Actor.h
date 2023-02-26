@@ -43,6 +43,7 @@ class MovingActor: public Actor{
         void changeDirections(int d);
         bool isOnTopOfSquare();
         bool isDirectionalSquare(int& dir);
+    bool isAtFork();
         
     private:
         int m_ticks_to_move;

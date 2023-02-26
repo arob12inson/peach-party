@@ -1,5 +1,6 @@
 #include "Actor.h"
 #include "StudentWorld.h"
+#include <list>
 
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
@@ -149,6 +150,32 @@ bool MovingActor::isDirectionalSquare(int& dir){
     }
     return false;
 }
+bool MovingActor::isAtFork(){
+    if (!isOnTopOfSquare()){
+        return false;
+    }
+    
+    int dir = m_traveling_direction;
+    int numValidDirections = 0;
+    
+    std::list<int> directions{right, up, left, down};
+    if (m_traveling_direction >= right || m_traveling_direction < left){
+        directions.remove(m_traveling_direction + 180);
+    }
+    else {
+        directions.remove(m_traveling_direction - 180);
+    }
+    
+    for (std::list<int>::iterator it = directions.begin(); it != directions.end(); it++){
+        m_traveling_direction = *it;
+        if (validDirection()){
+            numValidDirections++;
+        }
+        m_traveling_direction = dir;
+    }
+    m_traveling_direction = dir;
+    return true;
+}
 
 //Avatar Definition
 Avatar::Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber):
@@ -184,28 +211,28 @@ void Avatar::doSomething(){
             }
             
         }
-        else if (isOnTopOfSquare() && validDirection()){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
-            int action = Board()->getAction(m_playerNumber);
-            int td = getTravelDirection();// What to do if you're at a T intersection?
-            if (action == ACTION_UP){
-                if (getTravelDirection() == up){
-                    
-                }
-            } else if (action == ACTION_DOWN){
-                if (getTravelDirection() == down){
-                    
-                }
-            } else if (action == ACTION_LEFT){
-                if (getTravelDirection() == left){
-                    
-                }
-            } else if (action == ACTION_RIGHT){
-                if (getTravelDirection() == right){
-                    
-                }
-            }
-            
-        }
+//        else if (isOnTopOfSquare() && validDirection()){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
+//            int action = Board()->getAction(m_playerNumber);
+//            int td = getTravelDirection();// What to do if you're at a T intersection?
+//            if (action == ACTION_UP){
+//                if (getTravelDirection() == up){
+//
+//                }
+//            } else if (action == ACTION_DOWN){
+//                if (getTravelDirection() == down){
+//
+//                }
+//            } else if (action == ACTION_LEFT){
+//                if (getTravelDirection() == left){
+//
+//                }
+//            } else if (action == ACTION_RIGHT){
+//                if (getTravelDirection() == right){
+//
+//                }
+//            }
+//
+//        }
         else if (validDirection() == false){//Else if the Avatar can't continue moving forward in its current direction
 //            std::cerr << "I returned false at " << std::to_string(getX()) << ", " << std::to_string(getY()) << std::endl;
             changeDirections();
