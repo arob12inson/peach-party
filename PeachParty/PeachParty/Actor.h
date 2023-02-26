@@ -11,13 +11,16 @@ class Actor: public GraphObject{
     public:
         Actor(int name, int x, int y, StudentWorld* gameboard, int dir = right, int depth = 0, double size = 1.0);
         virtual void doSomething() {};//TODO: should this be a pure virtual function?
-        bool isInactive();
+        virtual bool isInactive(); //TODO: for baddies, this should always return true (since you don't want to destroy the baddies)
         void setInactive();
+        void setImpactable();
+        bool isImpactable();
         StudentWorld* Board();
         
         
     private:
         bool inactive;
+        bool impactable;
         StudentWorld* m_gameboard;
         
 };

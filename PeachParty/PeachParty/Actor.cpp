@@ -10,6 +10,7 @@
 Actor::Actor(int name, int x, int y, StudentWorld* gameboard, int dir, int depth, double size): GraphObject(name, x, y, dir, depth, size){
     inactive = false;
     m_gameboard = gameboard;
+    impactable = false;
 }
 
 bool Actor::isInactive(){
@@ -22,6 +23,12 @@ void Actor::setInactive(){
 
 StudentWorld* Actor::Board(){
     return m_gameboard;
+}
+void Actor::setImpactable(){
+    impactable = true;
+}
+bool Actor::isImpactable(){
+    return impactable;
 }
 
 
