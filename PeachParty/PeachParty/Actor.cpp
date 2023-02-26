@@ -174,7 +174,7 @@ bool MovingActor::isAtFork(){
         m_traveling_direction = dir;
     }
     m_traveling_direction = dir;
-    return true;
+    return (numValidDirections >= 2);
 }
 
 //Avatar Definition
