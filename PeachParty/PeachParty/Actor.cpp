@@ -177,14 +177,33 @@ void Avatar::doSomething(){
     
     if (getState() == WALKING){
         int x = 0;
-        if (isOnTopOfSquare() && isDirectionalSquare(x)){//If the Avatar is directly on top of a directional square3
-            changeDirections(x);
+        if (isOnTopOfSquare() && isDirectionalSquare(x)){//TODO: make the Directional Square Class handle this (Give it a pointer to peach and yoshi )
+            changeDirections(x);//TODO: change to setTravelDirection- don't overcomplicate it
             if(x == left){
                 setDirection(x);
             }
             
         }
-        else if (false){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
+        else if (isOnTopOfSquare() && validDirection()){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
+            int action = Board()->getAction(m_playerNumber);
+            int td = getTravelDirection();// What to do if you're at a T intersection?
+            if (action == ACTION_UP){
+                if (getTravelDirection() == up){
+                    
+                }
+            } else if (action == ACTION_DOWN){
+                if (getTravelDirection() == down){
+                    
+                }
+            } else if (action == ACTION_LEFT){
+                if (getTravelDirection() == left){
+                    
+                }
+            } else if (action == ACTION_RIGHT){
+                if (getTravelDirection() == right){
+                    
+                }
+            }
             
         }
         else if (validDirection() == false){//Else if the Avatar can't continue moving forward in its current direction

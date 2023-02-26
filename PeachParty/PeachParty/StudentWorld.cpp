@@ -102,10 +102,13 @@ int StudentWorld::move()
 void StudentWorld::cleanUp()
 {
     delete peach;
+    peach = nullptr;
     delete yoshi;
+    yoshi = nullptr;
     vector<Actor*>::iterator it = m_actors.begin(); //TODO: Why don't you need an std::vector?
     for (; it != m_actors.end(); it++){
         delete *it;
+        *it = nullptr;
     }
     
 }
