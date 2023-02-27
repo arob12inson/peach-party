@@ -93,6 +93,11 @@ int StudentWorld::move()
     setGameStatText("Game will end in a few seconds");
     
     peach->doSomething();
+    vector<Actor*>::iterator it = m_actors.begin();
+    while (it != m_actors.end()){
+        (*it)->doSomething();
+        it++;
+    }
     
     if (timeRemaining() <= 0)
 		return GWSTATUS_NOT_IMPLEMENTED;
