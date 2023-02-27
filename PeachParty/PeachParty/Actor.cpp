@@ -1,8 +1,5 @@
 #include "Actor.h"
 #include "StudentWorld.h"
-//#include <ctime> //TODO: How do we generate a random number
-//#include <cstdlib>
-#include <cassert>
 
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
@@ -180,7 +177,6 @@ Square::Square(int name, int x, int y, StudentWorld* gameboard, int dir, int dep
 void Square::doSomething(){//TODO: eventually declare as pure virtual
     
 }
-
 //CoinSquare Class
 CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake):
 Actor(name, x, y, gameboard, right, 1)
@@ -190,17 +186,9 @@ Actor(name, x, y, gameboard, right, 1)
     m_coinAmount = giveOrTake;
 }
 
-void CoinSquare::doSomething(){//TODO: eventually declare as pure virtual
+void CoinSquare::doSomething(){
     if (isInactive() == true){
         return;
     }
     
 }
-
-//bool Square::getAlive(){
-//    return m_isAlive;
-//}
-//
-//void Square::setAlive(){
-//    m_isAlive = !m_isAlive;
-//}
