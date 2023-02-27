@@ -11,15 +11,12 @@ Actor::Actor(int name, int x, int y, StudentWorld* gameboard, int dir, int depth
     inactive = false;
     m_gameboard = gameboard;
 }
-
 bool Actor::isInactive(){
     return inactive;
 }
-
 void Actor::setInactive(){
     inactive = true;
 }
-
 StudentWorld* Actor::Board(){
     return m_gameboard;
 }
