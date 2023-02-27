@@ -1,6 +1,6 @@
 #include "Actor.h"
 #include "StudentWorld.h"
-#include <list>
+
 
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
@@ -26,14 +26,13 @@ bool Actor::isImpactable(){
     return impactable;
 }
 
-
 //MovingActor Definition
 MovingActor::MovingActor(int name, int x, int y, StudentWorld* gameboard):
-Actor(name, x, y, gameboard)
-{
+Actor(name, x, y, gameboard){
     m_state = WAITING;
     m_ticks_to_move = 0;
     m_traveling_direction = 0;
+    first_move = true;
 }
 void MovingActor::setTicks(int ticks){
     m_ticks_to_move = ticks;
@@ -151,7 +150,7 @@ bool MovingActor::isDirectionalSquare(int& dir){
     return false;
 }
 bool MovingActor::isAtFork(){
-    if (!isOnTopOfSquare()){
+    if (!isOnTopOfSquare() || first_move == true){
         return false;
     }
     int dir = m_traveling_direction;
@@ -182,11 +181,13 @@ bool MovingActor::isBacktracking(int dir){
         return (m_traveling_direction - 180 == dir);
     }
 }
+void MovingActor::makeFirstMove(){ //
+    first_move = 0;
+}
 
 //Avatar Definition
 Avatar::Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber):
-MovingActor(name, x, y, gameboard)
-{
+MovingActor(name, x, y, gameboard){
     m_playerNumber = playerNumber;
     setState(WAITING);
     setTicks(0);
@@ -229,6 +230,12 @@ void Avatar::doSomething(){
                     setTravelDirection(td); //Any problems when td
                     return;
                 }
+                if (getTravelDirection() == left){
+                    setDirection(left);
+                }
+                else {
+                    setDirection(right);
+                }
             }
         }
         else if (validDirection() == false){//Else if the Avatar can't continue moving forward in its current direction
@@ -253,6 +260,7 @@ void Avatar::doSomething(){
         if (getTicks() == 0)//If ticks_to_move is 0 then:
             setState(WAITING);//Change the Avatar's state to the waiting to roll state.
     }
+    makeFirstMove();//tell program that avatar isn't at first move (and therefore should follow fork logic);
 }
 int Avatar::convertAction(int keyAction){ //converts keyboard press to its corresponding n/e/s/w counterpart returnts -1 if didn't press a direction
     if (keyAction == ACTION_DOWN){
@@ -281,16 +289,13 @@ void Square::doSomething(){//TODO: eventually declare as pure virtual
 
 //CoinSquare Class
 CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake):
-Actor(name, x, y, gameboard, right, 1)
-{
-    
+Actor(name, x, y, gameboard, right, 1){
     m_coinAmount = giveOrTake;
 }
 void CoinSquare::doSomething(){//TODO: eventually declare as pure virtual
     if (isInactive() == true){
         return;
     }
-    
 }
 
 

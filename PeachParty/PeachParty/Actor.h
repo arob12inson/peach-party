@@ -45,10 +45,12 @@ class MovingActor: public Actor{
         bool isDirectionalSquare(int& dir);
         bool isAtFork();
         bool isBacktracking(int dir);
+        void makeFirstMove();
         
     private:
         int m_ticks_to_move;
         bool m_state;
+        bool first_move;
         int m_traveling_direction;
 };
 

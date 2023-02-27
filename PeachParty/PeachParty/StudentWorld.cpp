@@ -91,7 +91,6 @@ int StudentWorld::move()
     // Notice that the return value GWSTATUS_NOT_IMPLEMENTED will cause our framework to end the game.
 
     setGameStatText("Game will end in a few seconds");
-    
     peach->doSomething();
     vector<Actor*>::iterator it = m_actors.begin();
     while (it != m_actors.end()){
