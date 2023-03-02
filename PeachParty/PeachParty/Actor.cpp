@@ -303,16 +303,20 @@ void CoinSquare::doSomething(){
     notifySquare();
 }
 void CoinSquare::notifySquare(){
-    if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == true)){
+    if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == false)){
+        std::cerr << "Peach is on the square " << m_peach->getX() << ", " << m_peach->getY() << std::endl;
         peachOnSquare = true;
     }
     else if (peachOnSquare && (m_peach->getX() != getX() || m_peach->getY() != getY())){
+        std::cerr << "Peach has left the square " << m_peach->getX() << ", " << m_peach->getY() << std::endl;
         peachOnSquare = false;
     }
-    if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == true)){
+    if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == false)){
+        std::cerr << "yoshi is on the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;
         yoshiOnSquare = true;
     }
     else if (yoshiOnSquare && (m_yoshi->getX() != getX() || m_yoshi->getY() != getY())){
+        std::cerr << "yoshi has left the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;
         peachOnSquare = false;
     }
 }
