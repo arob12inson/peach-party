@@ -8,16 +8,17 @@ class StudentWorld;
 
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 class Actor: public GraphObject{
-    public:
-        Actor(int name, int x, int y, StudentWorld* gameboard, int dir = right, int depth = 0, double size = 1.0);
-        virtual void doSomething() {};//TODO: should this be a pure virtual function?
+    protected:
         virtual bool isInactive(); //TODO: for baddies, this should always return true (since you don't want to destroy the baddies)
         void setInactive();
         void setImpactable();
         bool isImpactable();
         StudentWorld* Board();
         
-        
+    public:
+        Actor(int name, int x, int y, StudentWorld* gameboard, int dir = right, int depth = 0, double size = 1.0);
+        virtual void doSomething() {};//TODO: should this be a pure virtual function?
+    virtual ~Actor() {};
     private:
         bool inactive;
         bool impactable;
@@ -29,9 +30,6 @@ class MovingActor: public Actor{
     protected:
         const bool WAITING = 0;
         const bool WALKING = 1;
-    public:
-        MovingActor(int name, int x, int y, StudentWorld* gameboard);
-        virtual void doSomething() {};
         void setTicks(int ticks);
         void setState(bool state);
         void setTravelDirection(int d);
@@ -46,7 +44,9 @@ class MovingActor: public Actor{
         bool isAtFork();
         bool isBacktracking(int dir);
         void makeFirstMove();
-        
+    public:
+        MovingActor(int name, int x, int y, StudentWorld* gameboard);
+        virtual void doSomething() {};
     private:
         int m_ticks_to_move;
         bool m_state;

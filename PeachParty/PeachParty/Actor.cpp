@@ -1,8 +1,6 @@
 #include "Actor.h"
 #include "StudentWorld.h"
 
-
-
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
 //Actor definitions
 Actor::Actor(int name, int x, int y, StudentWorld* gameboard, int dir, int depth, double size): GraphObject(name, x, y, dir, depth, size){
