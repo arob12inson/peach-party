@@ -189,6 +189,7 @@ MovingActor(name, x, y, gameboard){
     m_playerNumber = playerNumber;
     setState(WAITING);
     setTicks(0);
+    m_coins = 0; // because the Avatar always spawns on a star square;
 }
 void Avatar::doSomething(){
     if (getState() == WAITING){
@@ -276,6 +277,10 @@ int Avatar::convertAction(int keyAction){ //converts keyboard press to its corre
       
     return -1;
 }
+void Avatar::addCoins(int coins){
+    m_coins = (m_coins + coins >= 0) ? m_coins + coins : m_coins;
+    
+}
 
 //SquareClass
 Square::Square(int name, int x, int y, StudentWorld* gameboard, int dir, int depth, double size) : Actor(name, x, y, gameboard, dir, depth, size){
@@ -286,9 +291,13 @@ void Square::doSomething(){//TODO: eventually declare as pure virtual
 }
 
 //CoinSquare Class
-CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake):
+CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Actor* peach, Actor* yoshi):
 Actor(name, x, y, gameboard, right, 1){
     m_coinAmount = giveOrTake;
+    m_peach = peach;
+    m_yoshi = yoshi;
+    peachOnSquare = false;
+    yoshiOnSquare = false;
 }
 void CoinSquare::doSomething(){//TODO: eventually declare as pure virtual
     if (isInactive() == true){

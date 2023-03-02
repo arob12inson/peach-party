@@ -42,13 +42,13 @@ int StudentWorld::init()
                 case Board::player://allocating players
                     peach = new Avatar(IID_PEACH, width, height, this, 1);
                     yoshi = new Avatar(IID_YOSHI, width, height, this, 2);
-                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
+                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3, peach, yoshi));
                     break;
                 case Board::blue_coin_square:
-                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
+                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3, peach, yoshi));
                     break;
                 case Board::red_coin_square:
-                    m_actors.push_back(new CoinSquare(IID_RED_COIN_SQUARE, width, height, this, -3));
+                    m_actors.push_back(new CoinSquare(IID_RED_COIN_SQUARE, width, height, this, -3, peach, yoshi));
                     break;
                 case Board::up_dir_square:
                     m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, 90));
@@ -73,11 +73,11 @@ int StudentWorld::init()
                     break;
                 case Board::bowser:
                     m_actors.push_back(new MovingActor(IID_BOWSER, width, height, this));
-                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
+                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3, peach, yoshi));
                     break;
                 case Board::boo:
                     m_actors.push_back(new MovingActor(IID_BOO, width, height, this));
-                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3));
+                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3, peach, yoshi));
                     break;
             }
         }

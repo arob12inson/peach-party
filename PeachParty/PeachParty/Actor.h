@@ -55,12 +55,15 @@ class MovingActor: public Actor{
 };
 
 class Avatar: public MovingActor{
+    
     public:
         Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber); //Name should be YOSHI or PEACH
         virtual void doSomething();
         int convertAction(int keyAction);
+        void addCoins(int coins);
     private:
         int m_playerNumber;
+        int m_coins;
     
 };
 
@@ -75,10 +78,16 @@ class Square: public Actor{
 class CoinSquare: public Actor{
     protected:
     public:
-        CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake);
+        CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Actor* peach, Actor* yoshi);
         virtual void doSomething();
+        
     private:
         int m_coinAmount;
+        Actor* m_peach;
+        Actor* m_yoshi;
+        bool peachOnSquare;
+        bool yoshiOnSquare;
+        
 };
 
 #endif // ACTOR_H_
