@@ -291,7 +291,7 @@ void Square::doSomething(){//TODO: eventually declare as pure virtual
 }
 
 //CoinSquare Class
-CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Actor* peach, Actor* yoshi):
+CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Avatar* peach, Avatar* yoshi):
 Actor(name, x, y, gameboard, right, 1){
     m_coinAmount = giveOrTake;
     m_peach = peach;
@@ -299,9 +299,21 @@ Actor(name, x, y, gameboard, right, 1){
     peachOnSquare = false;
     yoshiOnSquare = false;
 }
-void CoinSquare::doSomething(){//TODO: eventually declare as pure virtual
-    if (isInactive() == true){
-        return;
+void CoinSquare::doSomething(){
+    notifySquare();
+}
+void CoinSquare::notifySquare(){
+    if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == true)){
+        peachOnSquare = true;
+    }
+    else if (peachOnSquare && (m_peach->getX() != getX() || m_peach->getY() != getY())){
+        peachOnSquare = false;
+    }
+    if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == true)){
+        yoshiOnSquare = true;
+    }
+    else if (yoshiOnSquare && (m_yoshi->getX() != getX() || m_yoshi->getY() != getY())){
+        peachOnSquare = false;
     }
 }
 

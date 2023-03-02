@@ -9,6 +9,7 @@
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
 class Actor;
+class Avatar;
 
 class StudentWorld : public GameWorld
 {
@@ -23,8 +24,8 @@ public:
 private:
     Board m_board;
     std::vector<Actor*> m_actors;
-    Actor* peach;
-    Actor* yoshi;
+    Avatar* peach;
+    Avatar* yoshi;
     
     
 };

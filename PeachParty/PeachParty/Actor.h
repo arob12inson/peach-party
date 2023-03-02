@@ -34,7 +34,6 @@ class MovingActor: public Actor{
         void setState(bool state);
         void setTravelDirection(int d);
         int getTicks();
-        bool getState();
         int getTravelDirection();
         bool validDirection();
         void changeDirections();
@@ -47,6 +46,7 @@ class MovingActor: public Actor{
     public:
         MovingActor(int name, int x, int y, StudentWorld* gameboard);
         virtual void doSomething() {};
+        bool getState();
     private:
         int m_ticks_to_move;
         bool m_state;
@@ -78,15 +78,16 @@ class Square: public Actor{
 class CoinSquare: public Actor{
     protected:
     public:
-        CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Actor* peach, Actor* yoshi);
+        CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Avatar* peach, Avatar* yoshi);
         virtual void doSomething();
         
     private:
         int m_coinAmount;
-        Actor* m_peach;
-        Actor* m_yoshi;
+        Avatar* m_peach;
+        Avatar* m_yoshi;
         bool peachOnSquare;
         bool yoshiOnSquare;
+        void notifySquare();
         
 };
 
