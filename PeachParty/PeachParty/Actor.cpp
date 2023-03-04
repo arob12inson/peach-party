@@ -123,7 +123,7 @@ void MovingActor::changeDirections(){ //TODO: Overload this function with one th
 }
 void MovingActor::changeDirections(int d){
     m_traveling_direction = d;
-}
+}// Repetitive function with setTravelDirection
 bool MovingActor::isOnTopOfSquare(){
     return (getX() % 16 == 0 && getY() % 16 == 0);
 }
@@ -155,7 +155,7 @@ bool MovingActor::isAtFork(){
     int directions [4] = {right, up, left, down};
     for (int i = 0; i < 4; i++){
         if(isBacktracking(directions[i])){
-            directions[i] = -1;
+            directions[i] = -1; // Remove the backtracking direction
         }
     }
     for (int i = 0; i < 4; i++){
@@ -170,7 +170,7 @@ bool MovingActor::isAtFork(){
     m_traveling_direction = dir;
     return (numValidDirections >= 2);
 }
-bool MovingActor::isBacktracking(int dir){
+bool MovingActor::isBacktracking(int dir){ // Sees if a given direction is the opposite of the current direction
     if (m_traveling_direction == right || m_traveling_direction == up){
         return (m_traveling_direction + 180 == dir);
     }
@@ -178,7 +178,7 @@ bool MovingActor::isBacktracking(int dir){
         return (m_traveling_direction - 180 == dir);
     }
 }
-void MovingActor::makeFirstMove(){ //
+void MovingActor::makeFirstMove(){ // prevents first move from being treated like a fork
     first_move = 0;
 }
 
@@ -213,6 +213,9 @@ void Avatar::doSomething(){
             if(x == left){
                 setDirection(x);
             }
+            else {
+                setDirection(right);
+            }
             
         }
         else if (isAtFork()){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
@@ -222,7 +225,7 @@ void Avatar::doSomething(){
             if (action == -1){
                 return;
             }
-            else if (!isBacktracking(action)){//TODO: Fix issue with peach not turning properly when moving away from fork in y direction 
+            else if (!isBacktracking(action)){
                 setTravelDirection(action);
                 if (!validDirection()){
                     setTravelDirection(td); //Any problems when td
@@ -234,6 +237,9 @@ void Avatar::doSomething(){
                 else {
                     setDirection(right);
                 }
+            }
+            else if (isBacktracking(action)){
+                return;
             }
         }
         else if (validDirection() == false){//Else if the Avatar can't continue moving forward in its current direction
