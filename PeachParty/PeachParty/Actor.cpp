@@ -51,7 +51,6 @@ int MovingActor::getTravelDirection(){
     return m_traveling_direction;
 }
 bool MovingActor::validDirection(){
-    
     switch (m_traveling_direction){//TODO: Update with constants instead of 16
         case left: // is Y up and down?
             if (getX() == 0) //See if it is at the furthest left (protect against undefined behavior)
@@ -223,7 +222,7 @@ void Avatar::doSomething(){
             if (action == -1){
                 return;
             }
-            else if (!isBacktracking(action)){
+            else if (!isBacktracking(action)){//TODO: Fix issue with peach not turning properly when moving away from fork in y direction 
                 setTravelDirection(action);
                 if (!validDirection()){
                     setTravelDirection(td); //Any problems when td
@@ -287,7 +286,7 @@ Square::Square(int name, int x, int y, StudentWorld* gameboard, int dir, int dep
     
 }
 void Square::doSomething(){//TODO: eventually declare as pure virtual
-    
+    std::cerr << "This is the square & " << getX()<< ", " <<  getY() << std::endl;
 }
 
 //CoinSquare Class
@@ -300,12 +299,23 @@ Actor(name, x, y, gameboard, right, 1){
     yoshiOnSquare = false;
 }
 void CoinSquare::doSomething(){
+    std::cerr << "This is the coinsquare & " << getX()<< ", " <<  getY() << std::endl;
     notifySquare();
 }
 void CoinSquare::notifySquare(){
-    if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == false)){
+    if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == false)){ // TODO: wy bad access with number 3's map?
         std::cerr << "Peach is on the square " << m_peach->getX() << ", " << m_peach->getY() << std::endl;
         peachOnSquare = true;
+        std::cerr << "change peach's coin amount" << std::endl;
+        m_peach->addCoins(m_coinAmount);
+        if (m_coinAmount == 3){
+            std::cerr << "Play coin sound" << std::endl;
+            Board()->playSound(SOUND_GIVE_COIN);
+        }
+        else{
+            Board()->playSound(SOUND_TAKE_COIN);
+        }
+
     }
     else if (peachOnSquare && (m_peach->getX() != getX() || m_peach->getY() != getY())){
         std::cerr << "Peach has left the square " << m_peach->getX() << ", " << m_peach->getY() << std::endl;
@@ -314,6 +324,13 @@ void CoinSquare::notifySquare(){
     if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == false)){
         std::cerr << "yoshi is on the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;
         yoshiOnSquare = true;
+        m_yoshi->addCoins(m_coinAmount);
+        if (m_coinAmount == 3){
+            Board()->playSound(SOUND_GIVE_COIN);
+        }
+        else{
+            Board()->playSound(SOUND_TAKE_COIN);
+        }
     }
     else if (yoshiOnSquare && (m_yoshi->getX() != getX() || m_yoshi->getY() != getY())){
         std::cerr << "yoshi has left the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;

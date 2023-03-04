@@ -30,6 +30,20 @@ int StudentWorld::init()
     }
     
     //initialize data from board
+    
+    for (int i = 0; i < BOARD_HEIGHT; i++){
+        for (int j = 0; j < BOARD_WIDTH; j++){
+            Board::GridEntry ge = m_board.getContentsOf(i, j);
+            int width = i*SPRITE_WIDTH;
+            int height = j*SPRITE_HEIGHT;
+            if (ge == Board::player){
+                peach = new Avatar(IID_PEACH, width, height, this, 1);
+                yoshi = new Avatar(IID_YOSHI, width, height, this, 2);
+            }
+            
+        }
+    }
+    
     for (int i = 0; i < BOARD_HEIGHT; i++){
         for (int j = 0; j < BOARD_WIDTH; j++){
             Board::GridEntry ge = m_board.getContentsOf(i, j);
@@ -40,10 +54,6 @@ int StudentWorld::init()
                 case Board::empty://TODO: Put cases for each board type
                     break;
                 case Board::player://allocating players
-                    peach = new Avatar(IID_PEACH, width, height, this, 1);
-                    yoshi = new Avatar(IID_YOSHI, width, height, this, 2);
-                    m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3, peach, yoshi));
-                    break;
                 case Board::blue_coin_square:
                     m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3, peach, yoshi));
                     break;
