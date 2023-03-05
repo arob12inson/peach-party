@@ -99,6 +99,8 @@ bool MovingActor::validDirection(){
                 
                 return false;
             break;
+        case -1:
+            return false;
     }
     
     
@@ -489,11 +491,10 @@ void BankSquare::yoshiPassesSquare(){
 EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1){
     
 }
-
 void EventSquare::peachLandsOnSquare(){
     int action = randInt(1, 3);
     switch (action) {
-        case 1:
+        case 1: {
             bool validSquare = false;
             int x = randInt(0, SPRITE_WIDTH - 1);
             int y = randInt(0, SPRITE_HEIGHT - 1);
@@ -506,9 +507,17 @@ void EventSquare::peachLandsOnSquare(){
                 }
             }
             peach()->teleport(x, y);
+            Board()->playSound(SOUND_PLAYER_TELEPORT);
             break;
-
+        }
+        case 2:{
+            peach()->swap(yoshi());
+            break;
+        }
+        case 3:{
+            //TODO: Implement a vortex
+            break;
+        }
     }
-        
 }
 
