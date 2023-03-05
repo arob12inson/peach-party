@@ -299,6 +299,23 @@ int Avatar::getCoins(){
 int Avatar::getStars(){
     return m_stars;
 }
+void Avatar::teleport(int x, int y){ //TODO: Check if this works properly at some point
+    setTravelDirection(JUST_TELEPORTED);
+    moveTo(x, y);
+}
+void Avatar::swap(Avatar* other){
+    int otherX = other->getX();
+    int otherY = other->getY();
+    int otherDir = other->getTravelDirection();
+    int x = getX();
+    int y = getY();
+    int dir = getTravelDirection();
+    
+    other->moveTo(x, y);
+    other->setDirection(dir);
+    moveTo(otherX, otherY);
+    setDirection(otherDir);
+}
 
 //SquareClass
 Square::Square(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi, int dir, int depth, double size) : Actor(name, x, y, gameboard, dir, depth, size){
