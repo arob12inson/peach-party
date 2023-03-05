@@ -120,6 +120,10 @@ void MovingActor::changeDirections(){
             m_traveling_direction = left;
         }
     }
+    else if (m_traveling_direction == -1){
+        setDirection(right);
+        m_traveling_direction = right;
+    }
 }
 void MovingActor::changeDirections(int d){
     m_traveling_direction = d;
@@ -309,7 +313,7 @@ int Avatar::getStars(){
 void Avatar::teleport(int x, int y){
     setTravelDirection(JUST_TELEPORTED);
     moveTo(x, y);
-} // TODO: what happens when it teleports onto a square that demands an action? Should it still have the same action?
+} 
 //Solution: SInce the player probably can't get a move in within one tick, this will rarely be the case
 void Avatar::swap(Avatar* other){ //TODO: Make sure that it doesn't reactivate square when teleported
     if (can_be_teleported){
@@ -322,7 +326,7 @@ void Avatar::swap(Avatar* other){ //TODO: Make sure that it doesn't reactivate s
         int otherDir = other->getDirection();
         int otherWalkDir = other->getTravelDirection();
         int otherTicks = other->getTicks();
-        int otherState = (getTicks() == 0) ? WAITING : WALKING;
+        int otherState = (other->getTicks() == 0) ? WAITING : WALKING;
         
         other->moveTo(getX(), getY());
         other->setTravelDirection(getTravelDirection());
