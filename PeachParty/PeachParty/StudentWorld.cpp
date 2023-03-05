@@ -76,7 +76,7 @@ int StudentWorld::init()
                     m_actors.push_back(new Square(IID_EVENT_SQUARE, width, height, this, peach, yoshi));
                     break;
                 case Board::bank_square:
-                    m_actors.push_back(new Square(IID_BANK_SQUARE, width, height, this, peach, yoshi));
+                    m_actors.push_back(new BankSquare(IID_BANK_SQUARE, width, height, this, peach, yoshi));
                     break;
                 case Board::star_square:
                     m_actors.push_back(new StarSquare(IID_STAR_SQUARE, width, height, this, peach, yoshi));

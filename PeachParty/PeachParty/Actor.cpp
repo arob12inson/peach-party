@@ -387,14 +387,14 @@ void StarSquare::yoshiPassesSquare(){
     yoshiLandsOnSquare();
 }
 
-//DroppingsSquare Implementations:
+//DroppingsSquare Implementations: TODO: Need to see if it works properly
 DroppingsSquare::DroppingsSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1){
 }
 void DroppingsSquare::peachLandsOnSquare(){
     int option = 1;
     Board()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
     if (peach()->getStars() < 1){
-        int option = randInt(1, 2);
+        option = randInt(1, 2);
     }
     
     switch (option) {
@@ -410,7 +410,7 @@ void DroppingsSquare::yoshiLandsOnSquare(){
     int option = 1;
     Board()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
     if (yoshi()->getStars() < 1){
-        int option = randInt(1, 2);
+        option = randInt(1, 2);
     }
     switch (option) {
         case 1: // Remove 10 coins
@@ -420,6 +420,35 @@ void DroppingsSquare::yoshiLandsOnSquare(){
             yoshi()->subtractStars();
             break;
     }
+}
+
+//BankSquare Implementations:
+BankSquare::BankSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1){
+    m_amount_stored = 0;
+}
+void BankSquare::peachLandsOnSquare(){
+    peach()->addCoins(m_amount_stored);
+    m_amount_stored = 0;
+    Board()->playSound(SOUND_WITHDRAW_BANK);
+}
+void BankSquare::peachPassesSquare(){
+    int coins = peach()->getCoins();
+    peach()->addCoins(-5);
+    coins -= peach()->getCoins(); //if peach started with less than 5 coins, bank will only add the coins it "took"
+    m_amount_stored += coins;
+    Board()->playSound(SOUND_DEPOSIT_BANK);
+}
+void BankSquare::yoshiLandsOnSquare(){
+    yoshi()->addCoins(m_amount_stored);
+    m_amount_stored = 0;
+    Board()->playSound(SOUND_WITHDRAW_BANK);
+}
+void BankSquare::yoshiPassesSquare(){
+    int coins = yoshi()->getCoins();
+    yoshi()->addCoins(-5);
+    coins -= yoshi()->getCoins(); //if yoshi started with less than 5 coins, bank will only add the coins it "took"
+    m_amount_stored += coins;
+    Board()->playSound(SOUND_DEPOSIT_BANK);
 }
 
 
