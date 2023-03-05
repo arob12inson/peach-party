@@ -392,9 +392,11 @@ DroppingsSquare::DroppingsSquare(int name, int x, int y, StudentWorld* gameboard
 }
 void DroppingsSquare::peachLandsOnSquare(){
     int option = 1;
+    Board()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
     if (peach()->getStars() < 1){
         int option = randInt(1, 2);
     }
+    
     switch (option) {
         case 1: // Remove 10 coins
             peach()->addCoins(-10);
@@ -406,6 +408,7 @@ void DroppingsSquare::peachLandsOnSquare(){
 }
 void DroppingsSquare::yoshiLandsOnSquare(){
     int option = 1;
+    Board()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
     if (yoshi()->getStars() < 1){
         int option = randInt(1, 2);
     }

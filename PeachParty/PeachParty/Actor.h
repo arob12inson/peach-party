@@ -116,7 +116,7 @@ class StarSquare: public Square{
 class DroppingsSquare: public Square{
 protected:
     virtual void peachLandsOnSquare();
-    virtual void yoshiPassesSquare();
+    virtual void yoshiLandsOnSquare();
 public:
     DroppingsSquare(int name, int x, int y, StudentWorld* gameboard, Avatar*, Avatar* yoshi);
 private:
