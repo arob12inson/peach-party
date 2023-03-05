@@ -190,8 +190,10 @@ MovingActor(name, x, y, gameboard){
     setTicks(0);
     m_coins = 0;
     m_stars = 0;
+    can_be_teleported = true;
 }
 void Avatar::doSomething(){
+    can_be_teleported = false;
     if (getState() == WAITING){
         int action = Board()->getAction(m_playerNumber);
         if (action != ACTION_NONE){
@@ -267,6 +269,12 @@ void Avatar::doSomething(){
     }
     makeFirstMove();//tell program that avatar isn't at first move (and therefore should follow fork logic);
 }
+bool Avatar::canBeTeleported(){
+    return can_be_teleported;
+};
+void Avatar::changeTeleportationStatus(){
+    can_be_teleported = !can_be_teleported;
+}
 int Avatar::convertAction(int keyAction){ //converts keyboard press to its corresponding n/e/s/w counterpart returnts -1 if didn't press a direction
     if (keyAction == ACTION_DOWN){
         return down;
@@ -303,18 +311,26 @@ void Avatar::teleport(int x, int y){ //TODO: Check if this works properly at som
     setTravelDirection(JUST_TELEPORTED);
     moveTo(x, y);
 }
-void Avatar::swap(Avatar* other){
-    int otherX = other->getX();
-    int otherY = other->getY();
-    int otherDir = other->getTravelDirection();
-    int x = getX();
-    int y = getY();
-    int dir = getTravelDirection();
-    
-    other->moveTo(x, y);
-    other->setDirection(dir);
-    moveTo(otherX, otherY);
-    setDirection(otherDir);
+void Avatar::swap(Avatar* other){ //TODO: Make sure that it doesn't reactivate square when teleported
+    if (can_be_teleported && other->canBeTeleported()){
+        int otherX = other->getX();
+        int otherY = other->getY();
+        int otherDir = other->getTravelDirection();
+        int x = getX();
+        int y = getY();
+        int dir = getTravelDirection();
+        
+        other->moveTo(x, y);
+        other->setDirection(dir);
+        moveTo(otherX, otherY);
+        setDirection(otherDir);
+        
+        can_be_teleported = false;
+        other->changeTeleportationStatus();
+    }
+    else{
+        return;
+    }
 }
 
 //SquareClass

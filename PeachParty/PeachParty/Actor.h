@@ -55,7 +55,6 @@ class MovingActor: public Actor{
 };
 
 class Avatar: public MovingActor{
-    
     public:
         Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber); //Name should be YOSHI or PEACH
         virtual void doSomething();
@@ -67,10 +66,13 @@ class Avatar: public MovingActor{
         void subtractStars();
         int getCoins();
         int getStars();
+        bool canBeTeleported();
+    void changeTeleportationStatus();
     private:
         int m_playerNumber;
         int m_coins;
         int m_stars;
+        bool can_be_teleported;
         const int JUST_TELEPORTED = -1; // When we teleport, we set the direction to this in order to make user pick a valid direction
     
 };
