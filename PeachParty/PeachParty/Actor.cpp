@@ -485,4 +485,30 @@ void BankSquare::yoshiPassesSquare(){
     Board()->playSound(SOUND_DEPOSIT_BANK);
 }
 
+//EventSquare implementations:
+EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1){
+    
+}
+
+void EventSquare::peachLandsOnSquare(){
+    int action = randInt(1, 3);
+    switch (action) {
+        case 1:
+            bool validSquare = false;
+            int x = randInt(0, SPRITE_WIDTH - 1);
+            int y = randInt(0, SPRITE_HEIGHT - 1);
+            while (!validSquare){
+                if (Board()->board().getContentsOf(x, y) != Board::empty){
+                    validSquare = true;
+                }else{
+                    x = randInt(0, SPRITE_WIDTH - 1);
+                    y = randInt(0, SPRITE_HEIGHT - 1);
+                }
+            }
+            peach()->teleport(x, y);
+            break;
+
+    }
+        
+}
 

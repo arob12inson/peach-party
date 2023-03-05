@@ -140,4 +140,14 @@ private:
     int m_amount_stored;
 };
 
+class EventSquare: public Square{
+protected:
+    virtual void peachLandsOnSquare();
+    virtual void yoshiLandsOnSquare();
+public:
+    EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
+private:
+    
+};
+
 #endif // ACTOR_H_
