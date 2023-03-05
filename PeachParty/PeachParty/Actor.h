@@ -88,6 +88,8 @@ class Square: public Actor{
         virtual void yoshiLeavesSquare() {};
         Avatar* peach();
         Avatar* yoshi();
+    virtual void changePeachOnSquare();
+    virtual void changeYoshiOnSquare();
     public:
         Square(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi, int dir = right, int dept = 1, double size = 1.0);
         virtual void doSomething();

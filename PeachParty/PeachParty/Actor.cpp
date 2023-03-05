@@ -51,7 +51,7 @@ int MovingActor::getTravelDirection(){
     return m_traveling_direction;
 }
 bool MovingActor::validDirection(){
-    switch (m_traveling_direction){//TODO: Update with constants instead of 16
+    switch (m_traveling_direction){
         case left: // is Y up and down?
             if (getX() == 0) //See if it is at the furthest left (protect against undefined behavior)
             {
@@ -305,31 +305,46 @@ int Avatar::getCoins(){
 int Avatar::getStars(){
     return m_stars;
 }
-void Avatar::teleport(int x, int y){ //TODO: Check if this works properly at some point
+void Avatar::teleport(int x, int y){
     setTravelDirection(JUST_TELEPORTED);
     moveTo(x, y);
 } // TODO: what happens when it teleports onto a square that demands an action? Should it still have the same action?
 //Solution: SInce the player probably can't get a move in within one tick, this will rarely be the case
 void Avatar::swap(Avatar* other){ //TODO: Make sure that it doesn't reactivate square when teleported
     if (can_be_teleported && other->canBeTeleported()){
+        Board()->playSound(SOUND_PLAYER_TELEPORT);
         int otherX = other->getX();
         int otherY = other->getY();
-        int otherDir = other->getTravelDirection();
-        int x = getX();
-        int y = getY();
-        int dir = getTravelDirection();
+        int otherDir = other->getDirection();
+        int otherWalkDir = other->getTravelDirection();
+        int otherTicks = other->getTicks();
+        int otherState = (getTicks() == 0) ? WAITING : WALKING;
         
-        other->moveTo(x, y);
-        other->setDirection(dir);
+        other->moveTo(getX(), getY());
+        other->setTravelDirection(getTravelDirection());
+        other->setDirection(getDirection());
+        other->setState(getTicks() > 0 );
+        other->setTicks(getTicks());
+        
         moveTo(otherX, otherY);
+        setTravelDirection(otherWalkDir);
         setDirection(otherDir);
+        setState(otherState);
+        setTicks(otherTicks);
+        
+        
+        moveTo(otherX, otherY);
+        setTravelDirection(otherDir);
         
         can_be_teleported = false;
         other->changeTeleportationStatus();
     }
-    else{
-        return;
-    }
+    
+    
+    // when teleported
+//        can_be_teleported = false; // breaks because at the very next move call, can_be_teleported is changed true
+//        other->changeTeleportationStatus();
+    
 } //TODO: problem– if peach and yoshi reach event square at the same time, then only peach's will run
 
 //SquareClass
@@ -348,8 +363,8 @@ void Square::doSomething(){//TODO: eventually declare as pure virtual
         peachPassesSquare();
     }
     else if (peachOnSquare && (m_peach->getX() != getX() || m_peach->getY() != getY())){ // If peach leaves the square
-        peachLeavesSquare();
         peachOnSquare = false;
+        peachLeavesSquare();
     }
     if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == false)){ // if yoshi lands on the square
         yoshiOnSquare = true;
@@ -368,6 +383,12 @@ Avatar* Square::peach(){
 }
 Avatar* Square::yoshi(){
     return m_yoshi;
+}
+void Square::changePeachOnSquare(){
+    peachOnSquare = !peachOnSquare;
+}
+void Square::changeYoshiOnSquare(){
+    yoshiOnSquare = !yoshiOnSquare;
 }
 
 //CoinSquare Class
@@ -488,26 +509,30 @@ EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar
     
 }
 void EventSquare::peachLandsOnSquare(){
-    int action = randInt(1, 3);
+    int action = randInt(1, 2);
     switch (action) {
-        case 1: {
-            bool validSquare = false;
-            int x = randInt(0, SPRITE_WIDTH - 1);
-            int y = randInt(0, SPRITE_HEIGHT - 1);
-            while (!validSquare){
-                if (Board()->board().getContentsOf(x, y) != Board::empty){
-                    validSquare = true;
-                }else{
-                    x = randInt(0, SPRITE_WIDTH - 1);
-                    y = randInt(0, SPRITE_HEIGHT - 1);
-                }
-            }
-            peach()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
-            Board()->playSound(SOUND_PLAYER_TELEPORT);
-            break;
-        }
+        case 1: /*{*/
+//            bool validSquare = false;
+//            int x = randInt(0, SPRITE_WIDTH - 1);
+//            int y = randInt(0, SPRITE_HEIGHT - 1);
+//            while (!validSquare){
+//                if (Board()->board().getContentsOf(x, y) != Board::empty){
+//                    validSquare = true;
+//                }else{
+//                    x = randInt(0, SPRITE_WIDTH - 1);
+//                    y = randInt(0, SPRITE_HEIGHT - 1);
+//                }
+//            }
+//            peach()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
+//            changePeachOnSquare();
+//            changeYoshiOnSquare();
+//            Board()->playSound(SOUND_PLAYER_TELEPORT);
+//            break;
+//        }
         case 2:{
             peach()->swap(yoshi());
+            changePeachOnSquare();
+            changeYoshiOnSquare();
             break;
         }
         case 3:{
@@ -516,28 +541,31 @@ void EventSquare::peachLandsOnSquare(){
         }
     }
 }
-void EventSquare::yoshiLandsOnSquare(){
+void EventSquare::yoshiLandsOnSquare(){ //what happens when they are both on the same square?
     int action = randInt(1, 3);
     switch (action) {
         case 1: {
-            bool validSquare = false;
-            int x = randInt(0, SPRITE_WIDTH - 1);
-            int y = randInt(0, SPRITE_HEIGHT - 1);
-            while (!validSquare){
-                std::cerr << x << ", " << y << std::endl;
-                if (Board()->board().getContentsOf(x, y) != Board::empty){
-                    validSquare = true;
-                }else{
-                    x = randInt(0, SPRITE_WIDTH - 1);
-                    y = randInt(0, SPRITE_HEIGHT - 1);
-                }
-            }
-            yoshi()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
-            Board()->playSound(SOUND_PLAYER_TELEPORT);
-            break;
+//            bool validSquare = false;
+//            int x = randInt(0, SPRITE_WIDTH - 1);
+//            int y = randInt(0, SPRITE_HEIGHT - 1);
+//            while (!validSquare){
+//                if (Board()->board().getContentsOf(x, y) != Board::empty){
+//                    validSquare = true;
+//                }else{
+//                    x = randInt(0, SPRITE_WIDTH - 1);
+//                    y = randInt(0, SPRITE_HEIGHT - 1);
+//                }
+//            }
+//            yoshi()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
+//            changePeachOnSquare();
+//            changeYoshiOnSquare();
+//            Board()->playSound(SOUND_PLAYER_TELEPORT);
+//            break;
         }
         case 2:{
-            yoshi()->swap(peach());
+            yoshi()->swap(peach());// TODO: why does this run when yoshi moves?
+            changePeachOnSquare();
+            changeYoshiOnSquare();
             break;
         }
         case 3:{

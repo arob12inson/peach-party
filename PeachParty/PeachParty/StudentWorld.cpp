@@ -103,6 +103,7 @@ int StudentWorld::move()
     string stat = "Peach: Coins– " + to_string(peach->getCoins()) + " Stars: " + to_string(peach->getStars());
     setGameStatText(stat);
     peach->doSomething();
+    yoshi->doSomething();
     vector<Actor*>::iterator it = m_actors.begin();
     while (it != m_actors.end()){
         (*it)->doSomething();
