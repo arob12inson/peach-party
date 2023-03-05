@@ -290,6 +290,9 @@ void Avatar::addCoins(int coins){
 void Avatar::addStars(){
     m_stars++;
 }
+void Avatar::subtractStars(){
+    m_stars--;
+}
 int Avatar::getCoins(){
     return m_coins;
 }
@@ -340,40 +343,6 @@ CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int give
 Square(name, x, y, gameboard, peach, yoshi, right, 1){
     m_coinAmount = giveOrTake;
 }
-//void CoinSquare::doSomething(){
-//    if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == false)){
-//        peachOnSquare = true;
-//        m_peach->addCoins(m_coinAmount);
-//        if (m_coinAmount == 3){
-//            std::cerr << "Play coin sound" << std::endl;
-//            Board()->playSound(SOUND_GIVE_COIN);
-//        }
-//        else{
-//            Board()->playSound(SOUND_TAKE_COIN);
-//        }
-//
-//    }
-//    else if (peachOnSquare && (m_peach->getX() != getX() || m_peach->getY() != getY())){
-//        std::cerr << "Peach has left the square " << m_peach->getX() << ", " << m_peach->getY() << std::endl;
-//        peachOnSquare = false;
-//    }
-//    if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == false)){
-//        std::cerr << "yoshi is on the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;
-//        yoshiOnSquare = true;
-//        m_yoshi->addCoins(m_coinAmount);
-//        if (m_coinAmount == 3){
-//            Board()->playSound(SOUND_GIVE_COIN);
-//        }
-//        else{
-//            Board()->playSound(SOUND_TAKE_COIN);
-//        }
-//    }
-//    else if (yoshiOnSquare && (m_yoshi->getX() != getX() || m_yoshi->getY() != getY())){
-//        std::cerr << "yoshi has left the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;
-//        peachOnSquare = false;
-//    }
-//}
-
 void CoinSquare::peachLandsOnSquare() {
     peach()->addCoins(m_coinAmount);
     if (m_coinAmount == 3){
@@ -397,7 +366,6 @@ void CoinSquare::yoshiLandsOnSquare(){
 StarSquare::StarSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1) {
     
 }
-
 void StarSquare::peachLandsOnSquare(){
     if (peach()->getCoins() >= 20){
         peach()->addCoins(-20);
@@ -408,7 +376,6 @@ void StarSquare::peachLandsOnSquare(){
 void StarSquare::peachPassesSquare(){
     peachLandsOnSquare();
 }
-
 void StarSquare::yoshiLandsOnSquare(){
     if (yoshi()->getCoins() >= 20){
         yoshi()->addCoins(-20);
@@ -420,5 +387,36 @@ void StarSquare::yoshiPassesSquare(){
     yoshiLandsOnSquare();
 }
 
+//DroppingsSquare Implementations:
+DroppingsSquare::DroppingsSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1){
+}
+void DroppingsSquare::peachLandsOnSquare(){
+    int option = 1;
+    if (peach()->getStars() < 1){
+        int option = randInt(1, 2);
+    }
+    switch (option) {
+        case 1: // Remove 10 coins
+            peach()->addCoins(-10);
+            break;
+        case 2:
+            peach()->subtractStars();
+            break;
+    }
+}
+void DroppingsSquare::yoshiLandsOnSquare(){
+    int option = 1;
+    if (yoshi()->getStars() < 1){
+        int option = randInt(1, 2);
+    }
+    switch (option) {
+        case 1: // Remove 10 coins
+            yoshi()->addCoins(-10);
+            break;
+        case 2:
+            yoshi()->subtractStars();
+            break;
+    }
+}
 
 
