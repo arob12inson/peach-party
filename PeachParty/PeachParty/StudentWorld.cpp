@@ -82,11 +82,11 @@ int StudentWorld::init()
                     m_actors.push_back(new StarSquare(IID_STAR_SQUARE, width, height, this, peach, yoshi));
                     break;
                 case Board::bowser:
-                    m_actors.push_back(new MovingActor(IID_BOWSER, width, height, this));
+                    m_actors.push_back(new Baddies(IID_BOWSER, width, height, this, peach, yoshi));
                     m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3, peach, yoshi));
                     break;
                 case Board::boo:
-                    m_actors.push_back(new MovingActor(IID_BOO, width, height, this));
+                    m_actors.push_back(new Baddies(IID_BOO, width, height, this, peach, yoshi));
                     m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3, peach, yoshi));
                     break;
             }

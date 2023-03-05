@@ -185,6 +185,23 @@ bool MovingActor::isBacktracking(int dir){ // Sees if a given direction is the o
 void MovingActor::makeFirstMove(){ // prevents first move from being treated like a fork
     first_move = 0;
 }
+void MovingActor::makeMove(){
+    switch (getTravelDirection()) {
+        case left:
+            moveTo(getX()-2, getY());//Move two pixels in the walk direction
+            break;
+        case right:
+            moveTo(getX()+2, getY());//Move two pixels in the walk direction
+            break;
+        case up:
+            moveTo(getX(), getY()+2);//Move two pixels in the walk direction
+
+            break;
+        case down:
+            moveTo(getX(), getY()-2);//Move two pixels in the walk direction
+            break;
+    }
+}
 
 //Avatar Definition
 Avatar::Avatar(int name, int x, int y, StudentWorld* gameboard, int playerNumber):
@@ -197,7 +214,6 @@ MovingActor(name, x, y, gameboard){
     can_be_teleported = true;
 }
 void Avatar::doSomething(){
-    
     if (getState() == WAITING){
         int action = Board()->getAction(m_playerNumber);
         if (action != ACTION_NONE){
@@ -252,21 +268,22 @@ void Avatar::doSomething(){
         else if (validDirection() == false){//Else if the Avatar can't continue moving forward in its current direction
             changeDirections();
         }
-        switch (getTravelDirection()) {
-            case left:
-                moveTo(getX()-2, getY());//Move two pixels in the walk direction
-                break;
-            case right:
-                moveTo(getX()+2, getY());//Move two pixels in the walk direction
-                break;
-            case up:
-                moveTo(getX(), getY()+2);//Move two pixels in the walk direction
-
-                break;
-            case down:
-                moveTo(getX(), getY()-2);//Move two pixels in the walk direction
-                break;
-        }
+//        switch (getTravelDirection()) {
+//            case left:
+//                moveTo(getX()-2, getY());//Move two pixels in the walk direction
+//                break;
+//            case right:
+//                moveTo(getX()+2, getY());//Move two pixels in the walk direction
+//                break;
+//            case up:
+//                moveTo(getX(), getY()+2);//Move two pixels in the walk direction
+//
+//                break;
+//            case down:
+//                moveTo(getX(), getY()-2);//Move two pixels in the walk direction
+//                break;
+//        }
+        makeMove();
         can_be_teleported = true; // When actor moves from the square it was on, it should be able to teleport again (Only relevant when traveling away from an event square
         setTicks(getTicks()-1);//Decrement the ticks_to_move count by 1.
         if (getTicks() == 0)//If ticks_to_move is 0 then:
@@ -639,5 +656,62 @@ void EventSquare::doSomething(){
     }
     else if (yoshiIsOnSquare() == true && (yoshi()->getX() != getX() || yoshi()->getY()  != getY()) && yoshi()->getState() == true){
         setYoshiOnSquare(false);
+    }
+}
+
+//Baddies implementation
+Baddies::Baddies(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : MovingActor(name, x, y, gameboard){
+    m_peach = peach;
+    m_yoshi = yoshi;
+    m_travel_distance = 0;
+    m_pause_counter = 180;
+    setImpactable();
+    peachOnBaddy = false;
+    yoshiOnBaddy = false;
+    std::cerr << "Is impactable: " << isImpactable() << std::endl;
+}
+
+void Baddies::doSomething(){
+    if (getState() == WAITING){
+        if (!yoshiOnBaddy && (m_yoshi-> getX() == getX() && m_yoshi->getY() == getY()) && m_yoshi->getState() == WAITING){
+            yoshiLandsOnBaddy();
+            yoshiOnBaddy = true;
+        }
+        else if(yoshiOnBaddy && !(m_yoshi-> getX() == getX() && m_yoshi->getY() == getY())){
+            yoshiOnBaddy = false;
+        }
+        if (!peachOnBaddy && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == WAITING)){
+            peachLandsOnBaddy();
+            peachOnBaddy = true;
+        }
+        else if (peachOnBaddy && !(m_peach->getX() == getX() && m_peach->getY() == getY())){
+            peachOnBaddy = false;
+        }
+        m_pause_counter--;
+        if (m_pause_counter == 0){
+            whenPauseBecomesZero();
+            //for testing
+            setState(WALKING);
+            m_travel_distance = 2;
+            setTicks(2*8); 
+        }
+    }
+    if (getState() == WALKING){
+        if (isAtFork() && getTravelDirection() != JUST_TELEPORTED){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
+            do{
+                int newDirection = randInt(0, 3) * 90; // generate a new r/up/l/down direction
+                setTravelDirection(newDirection);
+            } while (!validDirection());
+        }
+        else if (validDirection() == false){
+            changeDirections();
+        }
+        makeMove();
+        setTicks(getTicks() - 1);
+        if (getTicks() == 0){
+            setState(WAITING);
+            m_pause_counter = 180;
+            bowserFinishesMove();
+        }
     }
 }

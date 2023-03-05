@@ -30,6 +30,7 @@ class MovingActor: public Actor{
     protected:
         const bool WAITING = 0;
         const bool WALKING = 1;
+        const int JUST_TELEPORTED = -1;
         void setTicks(int ticks);
         void setState(bool state);
         void setTravelDirection(int d);
@@ -43,6 +44,7 @@ class MovingActor: public Actor{
         bool isAtFork();
         bool isBacktracking(int dir);
         void makeFirstMove();
+    void makeMove();
     public:
         MovingActor(int name, int x, int y, StudentWorld* gameboard);
         virtual void doSomething() {};
@@ -153,5 +155,25 @@ class EventSquare: public Square{
     private:
     
 };
+ 
+class Baddies: public MovingActor{
+protected:
+public:
+    Baddies(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
+    virtual void doSomething();
+private:
+    Avatar* m_peach;
+    Avatar* m_yoshi;
+    int m_travel_distance;
+    int m_pause_counter;
+    int peachOnBaddy;
+    int yoshiOnBaddy;
+private:
+    virtual void whenPauseBecomesZero(){};
+    virtual void yoshiLandsOnBaddy() {};
+    virtual void peachLandsOnBaddy() {};
+    virtual void bowserFinishesMove() {};
+};
+
 
 #endif // ACTOR_H_
