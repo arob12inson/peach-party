@@ -102,8 +102,6 @@ bool MovingActor::validDirection(){
         case -1:
             return false;
     }
-    
-    
     return true;//Hypothetically, this should never run
 }
 void MovingActor::changeDirections(){ //TODO: Overload this function with one that takes a parameter of where to go
@@ -223,7 +221,7 @@ void Avatar::doSomething(){
             }
             
         }
-        else if (isAtFork()){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
+        else if (isAtFork() && getDirection() != JUST_TELEPORTED){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
 
             int action = convertAction(Board()->getAction(m_playerNumber));
             int td = getTravelDirection();// What to do if you're at a T intersection?
@@ -290,12 +288,10 @@ int Avatar::convertAction(int keyAction){ //converts keyboard press to its corre
     else if (keyAction == ACTION_UP){
         return up;
     }
-      
     return -1;
 }
 void Avatar::addCoins(int coins){
     m_coins = (m_coins + coins >= 0) ? m_coins + coins : m_coins;
-    
 }
 void Avatar::addStars(){
     m_stars++;
@@ -506,12 +502,42 @@ void EventSquare::peachLandsOnSquare(){
                     y = randInt(0, SPRITE_HEIGHT - 1);
                 }
             }
-            peach()->teleport(x, y);
+            peach()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
             Board()->playSound(SOUND_PLAYER_TELEPORT);
             break;
         }
         case 2:{
             peach()->swap(yoshi());
+            break;
+        }
+        case 3:{
+            //TODO: Implement a vortex
+            break;
+        }
+    }
+}
+void EventSquare::yoshiLandsOnSquare(){
+    int action = randInt(1, 3);
+    switch (action) {
+        case 1: {
+            bool validSquare = false;
+            int x = randInt(0, SPRITE_WIDTH - 1);
+            int y = randInt(0, SPRITE_HEIGHT - 1);
+            while (!validSquare){
+                std::cerr << x << ", " << y << std::endl;
+                if (Board()->board().getContentsOf(x, y) != Board::empty){
+                    validSquare = true;
+                }else{
+                    x = randInt(0, SPRITE_WIDTH - 1);
+                    y = randInt(0, SPRITE_HEIGHT - 1);
+                }
+            }
+            yoshi()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
+            Board()->playSound(SOUND_PLAYER_TELEPORT);
+            break;
+        }
+        case 2:{
+            yoshi()->swap(peach());
             break;
         }
         case 3:{
