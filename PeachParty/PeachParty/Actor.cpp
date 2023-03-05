@@ -188,7 +188,8 @@ MovingActor(name, x, y, gameboard){
     m_playerNumber = playerNumber;
     setState(WAITING);
     setTicks(0);
-    m_coins = 0; // because the Avatar always spawns on a star square;
+    m_coins = 0;
+    m_stars = 0;
 }
 void Avatar::doSomething(){
     if (getState() == WAITING){
@@ -286,6 +287,15 @@ void Avatar::addCoins(int coins){
     m_coins = (m_coins + coins >= 0) ? m_coins + coins : m_coins;
     
 }
+void Avatar::addStars(){
+    m_stars++;
+}
+int Avatar::getCoins(){
+    return m_coins;
+}
+int Avatar::getStars(){
+    return m_stars;
+}
 
 //SquareClass
 Square::Square(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi, int dir, int depth, double size) : Actor(name, x, y, gameboard, dir, depth, size){
@@ -381,6 +391,33 @@ void CoinSquare::yoshiLandsOnSquare(){
     else{
         Board()->playSound(SOUND_TAKE_COIN);
     }
+}
+
+//StarSquareImplementations:
+StarSquare::StarSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1) {
+    
+}
+
+void StarSquare::peachLandsOnSquare(){
+    if (peach()->getCoins() >= 20){
+        peach()->addCoins(-20);
+        peach()->addStars();
+        Board()->playSound(SOUND_GIVE_STAR);
+    }
+}
+void StarSquare::peachPassesSquare(){
+    peachLandsOnSquare();
+}
+
+void StarSquare::yoshiLandsOnSquare(){
+    if (yoshi()->getCoins() >= 20){
+        yoshi()->addCoins(-20);
+        yoshi()->addStars();
+        Board()->playSound(SOUND_GIVE_STAR);
+    }
+}
+void StarSquare::yoshiPassesSquare(){
+    yoshiLandsOnSquare();
 }
 
 

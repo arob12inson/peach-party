@@ -79,7 +79,7 @@ int StudentWorld::init()
                     m_actors.push_back(new Square(IID_BANK_SQUARE, width, height, this, peach, yoshi));
                     break;
                 case Board::star_square:
-                    m_actors.push_back(new Square(IID_STAR_SQUARE, width, height, this, peach, yoshi));
+                    m_actors.push_back(new StarSquare(IID_STAR_SQUARE, width, height, this, peach, yoshi));
                     break;
                 case Board::bowser:
                     m_actors.push_back(new MovingActor(IID_BOWSER, width, height, this));
@@ -99,8 +99,9 @@ int StudentWorld::move()
 {
     // This code is here merely to allow the game to build, run, and terminate after you hit ESC.
     // Notice that the return value GWSTATUS_NOT_IMPLEMENTED will cause our framework to end the game.
-
-    setGameStatText("Game will end in a few seconds");
+    
+    string stat = "Peach: Coins– " + to_string(peach->getCoins()) + " Stars: " + to_string(peach->getStars());
+    setGameStatText(stat);
     peach->doSomething();
     vector<Actor*>::iterator it = m_actors.begin();
     while (it != m_actors.end()){

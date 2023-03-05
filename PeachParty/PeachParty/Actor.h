@@ -61,9 +61,13 @@ class Avatar: public MovingActor{
         virtual void doSomething();
         int convertAction(int keyAction);
         void addCoins(int coins);
+        void addStars();
+        int getCoins();
+        int getStars();
     private:
         int m_playerNumber;
         int m_coins;
+        int m_stars;
     
 };
 
@@ -93,9 +97,19 @@ class CoinSquare: public Square{
         virtual void yoshiLandsOnSquare();
     public:
         CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Avatar* peach, Avatar* yoshi);
-        
     private:
         int m_coinAmount;
+};
+
+class StarSquare: public Square{
+    protected:
+        virtual void peachLandsOnSquare();
+        virtual void peachPassesSquare();
+        virtual void yoshiLandsOnSquare();
+        virtual void yoshiPassesSquare();
+    public:
+        StarSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
+    private:
 };
 
 #endif // ACTOR_H_
