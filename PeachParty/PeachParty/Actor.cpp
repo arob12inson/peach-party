@@ -581,9 +581,22 @@ EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar
 
 void EventSquare::doSomething(){
     if (peachIsOnSquare() == false && (peach()->getX() == getX() && peach()->getY() == getY() && peach()->getState() == false)){ // when peach stops walking and lands directly on top of the square
-        int action = 2;
+        int action = randInt(1, 3);
         if (action == 1){
-            
+            bool validSquare = false;
+            int x = randInt(0, SPRITE_WIDTH - 1);
+            int y = randInt(0, SPRITE_HEIGHT - 1);
+            while (!validSquare){
+                if (Board()->board().getContentsOf(x, y) != Board::empty){
+                    validSquare = true;
+                }else{
+                    x = randInt(0, SPRITE_WIDTH - 1);
+                    y = randInt(0, SPRITE_HEIGHT - 1);
+                }
+            }
+            peach()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
+            setPeachOnSquare(false);
+            Board()->playSound(SOUND_PLAYER_TELEPORT);
         }
         else if (action == 2){
             peach()->swap(yoshi());
@@ -596,8 +609,25 @@ void EventSquare::doSomething(){
         setPeachOnSquare(false);
     }
     if (yoshiIsOnSquare() == false && (yoshi()->getX() == getX() && yoshi()->getY()  == getY() && yoshi()->getState() == false)){
-        int action = 2;
-        if (action == 2){
+        int action = randInt(1, 3);
+        if (action == 1){
+            bool validSquare = false;
+            int x = randInt(0, SPRITE_WIDTH - 1);
+            int y = randInt(0, SPRITE_HEIGHT - 1);
+            while (!validSquare){
+                if (Board()->board().getContentsOf(x, y) != Board::empty){
+                    validSquare = true;
+                }else{
+                    x = randInt(0, SPRITE_WIDTH - 1);
+                    y = randInt(0, SPRITE_HEIGHT - 1);
+                }
+            }
+            yoshi()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
+            setYoshiOnSquare(false);
+            Board()->playSound(SOUND_PLAYER_TELEPORT);
+
+        }
+        else if (action == 2){
             yoshi()->swap(peach());
             setPeachOnSquare(true);
             setYoshiOnSquare(false);
