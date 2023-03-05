@@ -193,7 +193,7 @@ MovingActor(name, x, y, gameboard){
     can_be_teleported = true;
 }
 void Avatar::doSomething(){
-    can_be_teleported = false;
+    can_be_teleported = true;
     if (getState() == WAITING){
         int action = Board()->getAction(m_playerNumber);
         if (action != ACTION_NONE){
@@ -310,7 +310,8 @@ int Avatar::getStars(){
 void Avatar::teleport(int x, int y){ //TODO: Check if this works properly at some point
     setTravelDirection(JUST_TELEPORTED);
     moveTo(x, y);
-}
+} // TODO: what happens when it teleports onto a square that demands an action? Should it still have the same action?
+//Solution: SInce the player probably can't get a move in within one tick, this will rarely be the case
 void Avatar::swap(Avatar* other){ //TODO: Make sure that it doesn't reactivate square when teleported
     if (can_be_teleported && other->canBeTeleported()){
         int otherX = other->getX();
@@ -331,7 +332,7 @@ void Avatar::swap(Avatar* other){ //TODO: Make sure that it doesn't reactivate s
     else{
         return;
     }
-}
+} //TODO: problem– if peach and yoshi reach event square at the same time, then only peach's will run
 
 //SquareClass
 Square::Square(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi, int dir, int depth, double size) : Actor(name, x, y, gameboard, dir, depth, size){
