@@ -104,7 +104,7 @@ bool MovingActor::validDirection(){
     }
     return true;//Hypothetically, this should never run
 }
-void MovingActor::changeDirections(){ //TODO: Overload this function with one that takes a parameter of where to go
+void MovingActor::changeDirections(){
     if (m_traveling_direction == left || m_traveling_direction == right){
         setDirection(right);
         m_traveling_direction = up;
@@ -193,7 +193,7 @@ MovingActor(name, x, y, gameboard){
     can_be_teleported = true;
 }
 void Avatar::doSomething(){
-    can_be_teleported = true;
+    
     if (getState() == WAITING){
         int action = Board()->getAction(m_playerNumber);
         if (action != ACTION_NONE){
@@ -211,7 +211,7 @@ void Avatar::doSomething(){
     }
     if (getState() == WALKING){
         int x = 0;
-        if (isOnTopOfSquare() && isDirectionalSquare(x)){//TODO: make the Directional Square Class handle this (Give it a pointer to peach and yoshi )
+        if (isOnTopOfSquare() && isDirectionalSquare(x)){
             changeDirections(x);//TODO: change to setTravelDirection- don't overcomplicate it
             if(x == left){
                 setDirection(x);
@@ -221,7 +221,7 @@ void Avatar::doSomething(){
             }
             
         }
-        else if (isAtFork() && getDirection() != JUST_TELEPORTED){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
+        else if (isAtFork() && getTravelDirection() != JUST_TELEPORTED){ //Else if the Avatar is directly on top of a square at a fork (with multiple directions where it could move next)
 
             int action = convertAction(Board()->getAction(m_playerNumber));
             int td = getTravelDirection();// What to do if you're at a T intersection?
@@ -263,6 +263,7 @@ void Avatar::doSomething(){
                 moveTo(getX(), getY()-2);//Move two pixels in the walk direction
                 break;
         }
+        can_be_teleported = true; // When actor moves from the square it was on, it should be able to teleport again (Only relevant when traveling away from an event square
         setTicks(getTicks()-1);//Decrement the ticks_to_move count by 1.
         if (getTicks() == 0)//If ticks_to_move is 0 then:
             setState(WAITING);//Change the Avatar's state to the waiting to roll state.
@@ -272,8 +273,8 @@ void Avatar::doSomething(){
 bool Avatar::canBeTeleported(){
     return can_be_teleported;
 };
-void Avatar::changeTeleportationStatus(){
-    can_be_teleported = !can_be_teleported;
+void Avatar::changeTeleportationStatus(bool value){
+    can_be_teleported = value;
 }
 int Avatar::convertAction(int keyAction){ //converts keyboard press to its corresponding n/e/s/w counterpart returnts -1 if didn't press a direction
     if (keyAction == ACTION_DOWN){
@@ -311,8 +312,11 @@ void Avatar::teleport(int x, int y){
 } // TODO: what happens when it teleports onto a square that demands an action? Should it still have the same action?
 //Solution: SInce the player probably can't get a move in within one tick, this will rarely be the case
 void Avatar::swap(Avatar* other){ //TODO: Make sure that it doesn't reactivate square when teleported
-    if (can_be_teleported && other->canBeTeleported()){
+    if (can_be_teleported){
         Board()->playSound(SOUND_PLAYER_TELEPORT);
+        
+        
+        
         int otherX = other->getX();
         int otherY = other->getY();
         int otherDir = other->getDirection();
@@ -332,14 +336,13 @@ void Avatar::swap(Avatar* other){ //TODO: Make sure that it doesn't reactivate s
         setState(otherState);
         setTicks(otherTicks);
         
-        
-        moveTo(otherX, otherY);
-        setTravelDirection(otherDir);
+
         
         can_be_teleported = false;
-        other->changeTeleportationStatus();
+        other->changeTeleportationStatus(false);
+        std::cerr << "Peach got teleported" << std::endl;
     }
-    
+
     
     // when teleported
 //        can_be_teleported = false; // breaks because at the very next move call, can_be_teleported is changed true
@@ -384,11 +387,11 @@ Avatar* Square::peach(){
 Avatar* Square::yoshi(){
     return m_yoshi;
 }
-void Square::changePeachOnSquare(){
-    peachOnSquare = !peachOnSquare;
+void Square::setPeachOnSquare(bool value){
+    peachOnSquare = value;
 }
-void Square::changeYoshiOnSquare(){
-    yoshiOnSquare = !yoshiOnSquare;
+void Square::setYoshiOnSquare(bool value){
+    yoshiOnSquare = value;
 }
 
 //CoinSquare Class
@@ -508,10 +511,10 @@ void BankSquare::yoshiPassesSquare(){
 EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1){
     
 }
-void EventSquare::peachLandsOnSquare(){
-    int action = randInt(1, 2);
-    switch (action) {
-        case 1: /*{*/
+//void EventSquare::peachLandsOnSquare(){
+//    int action = randInt(1, 2);
+//    switch (action) {
+//        case 1: {
 //            bool validSquare = false;
 //            int x = randInt(0, SPRITE_WIDTH - 1);
 //            int y = randInt(0, SPRITE_HEIGHT - 1);
@@ -529,22 +532,22 @@ void EventSquare::peachLandsOnSquare(){
 //            Board()->playSound(SOUND_PLAYER_TELEPORT);
 //            break;
 //        }
-        case 2:{
-            peach()->swap(yoshi());
-            changePeachOnSquare();
-            changeYoshiOnSquare();
-            break;
-        }
-        case 3:{
-            //TODO: Implement a vortex
-            break;
-        }
-    }
-}
-void EventSquare::yoshiLandsOnSquare(){ //what happens when they are both on the same square?
-    int action = randInt(1, 3);
-    switch (action) {
-        case 1: {
+//        case 2:{
+//            peach()->swap(yoshi());
+//            changePeachOnSquare();
+//            changeYoshiOnSquare();
+//            break;
+//        }
+//        case 3:{
+//            //TODO: Implement a vortex
+//            break;
+//        }
+//    }
+//}
+//void EventSquare::yoshiLandsOnSquare(){ //what happens when they are both on the same square?
+//    int action = randInt(1, 3);
+//    switch (action) {
+//        case 1: {
 //            bool validSquare = false;
 //            int x = randInt(0, SPRITE_WIDTH - 1);
 //            int y = randInt(0, SPRITE_HEIGHT - 1);
@@ -561,17 +564,46 @@ void EventSquare::yoshiLandsOnSquare(){ //what happens when they are both on the
 //            changeYoshiOnSquare();
 //            Board()->playSound(SOUND_PLAYER_TELEPORT);
 //            break;
+//        }
+//        case 2:{
+//            yoshi()->swap(peach());// TODO: why does this run when yoshi moves?
+//            changePeachOnSquare();
+//            changeYoshiOnSquare();
+//            break;
+//        }
+//        case 3:{
+//            //TODO: Implement a vortex
+//            break;
+//        }
+//    }
+//}
+//
+
+void EventSquare::doSomething(){
+    if (peachIsOnSquare() == false && (peach()->getX() == getX() && peach()->getY() == getY() && peach()->getState() == false)){ // when peach stops walking and lands directly on top of the square
+        int action = 2;
+        if (action == 1){
+            
         }
-        case 2:{
-            yoshi()->swap(peach());// TODO: why does this run when yoshi moves?
-            changePeachOnSquare();
-            changeYoshiOnSquare();
-            break;
-        }
-        case 3:{
-            //TODO: Implement a vortex
-            break;
+        else if (action == 2){
+            peach()->swap(yoshi());
+            setPeachOnSquare(false);
+            setYoshiOnSquare(true);
+            
         }
     }
+    else if (peachIsOnSquare() == true && (peach()->getX() != getX() || peach()->getY() != getY()) && peach()->getState() == true){
+        setPeachOnSquare(false);
+    }
+    if (yoshiIsOnSquare() == false && (yoshi()->getX() == getX() && yoshi()->getY()  == getY() && yoshi()->getState() == false)){
+        int action = 2;
+        if (action == 2){
+            yoshi()->swap(peach());
+            setPeachOnSquare(true);
+            setYoshiOnSquare(false);
+        }
+    }
+    else if (yoshiIsOnSquare() == true && (yoshi()->getX() != getX() || yoshi()->getY()  != getY()) && yoshi()->getState() == true){
+        setYoshiOnSquare(false);
+    }
 }
-

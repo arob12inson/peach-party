@@ -66,6 +66,8 @@ class Avatar: public MovingActor{
         void subtractStars();
         int getCoins();
         int getStars();
+        bool canBeTeleported();
+    void changeTeleportationStatus(bool value);
         
     private:
         int m_playerNumber;
@@ -73,8 +75,7 @@ class Avatar: public MovingActor{
         int m_stars;
         bool can_be_teleported;
         const int JUST_TELEPORTED = -1; // When we teleport, we set the direction to this in order to make user pick a valid direction
-        bool canBeTeleported();
-        void changeTeleportationStatus();
+        
     
 };
 
@@ -88,8 +89,10 @@ class Square: public Actor{
         virtual void yoshiLeavesSquare() {};
         Avatar* peach();
         Avatar* yoshi();
-    virtual void changePeachOnSquare();
-    virtual void changeYoshiOnSquare();
+        virtual void setPeachOnSquare(bool value);
+        virtual void setYoshiOnSquare(bool value);
+        virtual bool peachIsOnSquare(){return peachOnSquare;};
+        virtual bool yoshiIsOnSquare(){return yoshiOnSquare;};
     public:
         Square(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi, int dir = right, int dept = 1, double size = 1.0);
         virtual void doSomething();
@@ -131,24 +134,23 @@ class DroppingsSquare: public Square{
 };
 
 class BankSquare: public Square{
-protected:
-    virtual void peachLandsOnSquare();
-    virtual void peachPassesSquare();
-    virtual void yoshiLandsOnSquare();
-    virtual void yoshiPassesSquare();
-public:
-    BankSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
-private:
-    int m_amount_stored;
+    protected:
+        virtual void peachLandsOnSquare();
+        virtual void peachPassesSquare();
+        virtual void yoshiLandsOnSquare();
+        virtual void yoshiPassesSquare();
+    public:
+        BankSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
+    private:
+        int m_amount_stored;
 };
 
 class EventSquare: public Square{
-protected:
-    virtual void peachLandsOnSquare();
-    virtual void yoshiLandsOnSquare();
-public:
-    EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
-private:
+    protected:
+    public:
+        EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
+        virtual void doSomething();
+    private:
     
 };
 
