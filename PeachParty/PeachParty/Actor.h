@@ -69,26 +69,33 @@ class Avatar: public MovingActor{
 
 class Square: public Actor{
     protected:
+        virtual void peachPassesSquare() {};
+        virtual void peachLandsOnSquare() {};
+        virtual void peachLeavesSquare() {};
+        virtual void yoshiPassesSquare() {};
+        virtual void yoshiLandsOnSquare() {};
+        virtual void yoshiLeavesSquare() {};
+        Avatar* peach();
+        Avatar* yoshi();
     public:
-        Square(int name, int x, int y, StudentWorld* gameboard, int dir = right, int dept = 1, double size = 1.0);
+        Square(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi, int dir = right, int dept = 1, double size = 1.0);
         virtual void doSomething();
     private:
-};
-
-class CoinSquare: public Actor{
-    protected:
-    public:
-        CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Avatar* peach, Avatar* yoshi);
-        virtual void doSomething();
-        
-    private:
-        int m_coinAmount;
         Avatar* m_peach;
         Avatar* m_yoshi;
         bool peachOnSquare;
         bool yoshiOnSquare;
-        void notifySquare();
+};
+
+class CoinSquare: public Square{
+    protected:
+        virtual void peachLandsOnSquare();
+        virtual void yoshiLandsOnSquare();
+    public:
+        CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Avatar* peach, Avatar* yoshi);
         
+    private:
+        int m_coinAmount;
 };
 
 #endif // ACTOR_H_

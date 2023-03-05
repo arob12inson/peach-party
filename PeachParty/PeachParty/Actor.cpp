@@ -288,60 +288,100 @@ void Avatar::addCoins(int coins){
 }
 
 //SquareClass
-Square::Square(int name, int x, int y, StudentWorld* gameboard, int dir, int depth, double size) : Actor(name, x, y, gameboard, dir, depth, size){
-    
-}
-void Square::doSomething(){//TODO: eventually declare as pure virtual
-    std::cerr << "This is the square & " << getX()<< ", " <<  getY() << std::endl;
-}
-
-//CoinSquare Class
-CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Avatar* peach, Avatar* yoshi):
-Actor(name, x, y, gameboard, right, 1){
-    m_coinAmount = giveOrTake;
+Square::Square(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi, int dir, int depth, double size) : Actor(name, x, y, gameboard, dir, depth, size){
     m_peach = peach;
     m_yoshi = yoshi;
     peachOnSquare = false;
     yoshiOnSquare = false;
 }
-void CoinSquare::doSomething(){
-    std::cerr << "This is the coinsquare & " << getX()<< ", " <<  getY() << std::endl;
-    notifySquare();
-}
-void CoinSquare::notifySquare(){
-    if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == false)){ // TODO: wy bad access with number 3's map?
-        std::cerr << "Peach is on the square " << m_peach->getX() << ", " << m_peach->getY() << std::endl;
+void Square::doSomething(){//TODO: eventually declare as pure virtual
+    if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == false)){ //If Peach
         peachOnSquare = true;
-        std::cerr << "change peach's coin amount" << std::endl;
-        m_peach->addCoins(m_coinAmount);
-        if (m_coinAmount == 3){
-            std::cerr << "Play coin sound" << std::endl;
-            Board()->playSound(SOUND_GIVE_COIN);
-        }
-        else{
-            Board()->playSound(SOUND_TAKE_COIN);
-        }
-
+        peachLandsOnSquare();
     }
-    else if (peachOnSquare && (m_peach->getX() != getX() || m_peach->getY() != getY())){
-        std::cerr << "Peach has left the square " << m_peach->getX() << ", " << m_peach->getY() << std::endl;
+    else if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == true)){// if peach walks over the square
+        peachPassesSquare();
+    }
+    else if (peachOnSquare && (m_peach->getX() != getX() || m_peach->getY() != getY())){ // If peach leaves the square
+        peachLeavesSquare();
         peachOnSquare = false;
     }
-    if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == false)){
-        std::cerr << "yoshi is on the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;
+    if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == false)){ // if yoshi lands on the square
         yoshiOnSquare = true;
-        m_yoshi->addCoins(m_coinAmount);
-        if (m_coinAmount == 3){
-            Board()->playSound(SOUND_GIVE_COIN);
-        }
-        else{
-            Board()->playSound(SOUND_TAKE_COIN);
-        }
+        yoshiLandsOnSquare();
     }
-    else if (yoshiOnSquare && (m_yoshi->getX() != getX() || m_yoshi->getY() != getY())){
-        std::cerr << "yoshi has left the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;
-        peachOnSquare = false;
+    else if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == true)){ // if yoshi walks over the square
+        yoshiPassesSquare();
+    }
+    else if (yoshiOnSquare && (m_yoshi->getX() != getX() || m_yoshi->getY() != getY())){ // if yoshi leaves the square
+        yoshiOnSquare = false;
+        yoshiLandsOnSquare();
     }
 }
+Avatar* Square::peach(){
+    return m_peach;
+}
+Avatar* Square::yoshi(){
+    return m_yoshi;
+}
+
+//CoinSquare Class
+CoinSquare::CoinSquare(int name, int x, int y, StudentWorld* gameboard, int giveOrTake, Avatar* peach, Avatar* yoshi):
+Square(name, x, y, gameboard, peach, yoshi, right, 1){
+    m_coinAmount = giveOrTake;
+}
+//void CoinSquare::doSomething(){
+//    if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == false)){
+//        peachOnSquare = true;
+//        m_peach->addCoins(m_coinAmount);
+//        if (m_coinAmount == 3){
+//            std::cerr << "Play coin sound" << std::endl;
+//            Board()->playSound(SOUND_GIVE_COIN);
+//        }
+//        else{
+//            Board()->playSound(SOUND_TAKE_COIN);
+//        }
+//
+//    }
+//    else if (peachOnSquare && (m_peach->getX() != getX() || m_peach->getY() != getY())){
+//        std::cerr << "Peach has left the square " << m_peach->getX() << ", " << m_peach->getY() << std::endl;
+//        peachOnSquare = false;
+//    }
+//    if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == false)){
+//        std::cerr << "yoshi is on the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;
+//        yoshiOnSquare = true;
+//        m_yoshi->addCoins(m_coinAmount);
+//        if (m_coinAmount == 3){
+//            Board()->playSound(SOUND_GIVE_COIN);
+//        }
+//        else{
+//            Board()->playSound(SOUND_TAKE_COIN);
+//        }
+//    }
+//    else if (yoshiOnSquare && (m_yoshi->getX() != getX() || m_yoshi->getY() != getY())){
+//        std::cerr << "yoshi has left the square " << m_yoshi->getX() << ", " << m_yoshi->getY() << std::endl;
+//        peachOnSquare = false;
+//    }
+//}
+
+void CoinSquare::peachLandsOnSquare() {
+    peach()->addCoins(m_coinAmount);
+    if (m_coinAmount == 3){
+        Board()->playSound(SOUND_GIVE_COIN);
+    }
+    else{
+        Board()->playSound(SOUND_TAKE_COIN);
+    }
+};
+void CoinSquare::yoshiLandsOnSquare(){
+    yoshi()->addCoins(m_coinAmount);
+    if (m_coinAmount == 3){
+        Board()->playSound(SOUND_GIVE_COIN);
+    }
+    else{
+        Board()->playSound(SOUND_TAKE_COIN);
+    }
+}
+
 
 

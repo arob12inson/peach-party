@@ -61,25 +61,25 @@ int StudentWorld::init()
                     m_actors.push_back(new CoinSquare(IID_RED_COIN_SQUARE, width, height, this, -3, peach, yoshi));
                     break;
                 case Board::up_dir_square:
-                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, 90));
+                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, peach, yoshi, 90));
                     break;
                 case Board::down_dir_square:
-                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, 270));
+                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, peach, yoshi,  270));
                     break;
                 case Board::left_dir_square:
-                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, 180));
+                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, peach, yoshi,  180));
                     break;
                 case Board::right_dir_square:
-                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, 0));
+                    m_actors.push_back(new Square(IID_DIR_SQUARE, width, height, this, peach, yoshi,  0));
                     break;
                 case Board::event_square:
-                    m_actors.push_back(new Square(IID_EVENT_SQUARE, width, height, this));
+                    m_actors.push_back(new Square(IID_EVENT_SQUARE, width, height, this, peach, yoshi));
                     break;
                 case Board::bank_square:
-                    m_actors.push_back(new Square(IID_BANK_SQUARE, width, height, this));
+                    m_actors.push_back(new Square(IID_BANK_SQUARE, width, height, this, peach, yoshi));
                     break;
                 case Board::star_square:
-                    m_actors.push_back(new Square(IID_STAR_SQUARE, width, height, this));
+                    m_actors.push_back(new Square(IID_STAR_SQUARE, width, height, this, peach, yoshi));
                     break;
                 case Board::bowser:
                     m_actors.push_back(new MovingActor(IID_BOWSER, width, height, this));
