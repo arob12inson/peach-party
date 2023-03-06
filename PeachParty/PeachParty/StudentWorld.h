@@ -23,12 +23,17 @@ public:
     virtual ~StudentWorld();
     void createDroppingSquare(int x, int y);
     Vortex* createVortex(Avatar* x);
+    bool determineImpact(Vortex* v);
+//    int withdrawCoins(){temp x = bankAmount; bankAmount = 0; return x;}
+//    void depositCoins(int x){return bankAmount;}
+    
     
 private:
     Board m_board;
     std::vector<Actor*> m_actors;
     Avatar* peach;
     Avatar* yoshi;
+//    int bankAmount; 
     
     
 };

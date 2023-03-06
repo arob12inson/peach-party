@@ -18,6 +18,7 @@ class Actor: public GraphObject{
         virtual bool isInactive(); //TODO: for baddies, this should always return true (since you don't want to destroy the baddies)
         void setInactive();
         bool isImpactable();
+    virtual void impacted() {}
     private:
         bool inactive;
         bool impactable;
@@ -45,7 +46,6 @@ class MovingActor: public Actor{
         void setTicks(int ticks);
         void setState(bool state);
         void setTravelDirection(int d);
-        int getTicks();
         bool validDirection();
         void changeDirections();
         void changeDirections(int d);
@@ -60,6 +60,7 @@ class MovingActor: public Actor{
         virtual void doSomething() {};
         bool getState();
         int getTravelDirection();
+        int getTicks();
     private:
         int m_ticks_to_move;
         bool m_state;
@@ -83,6 +84,7 @@ class Avatar: public MovingActor{
         void changeTeleportationStatus(bool value);
         Vortex* vortex(){return m_vortex;}
         void giveVortex(){hasVortex = true;};
+        bool showVortex() {return hasVortex;}
         
     private:
         int m_playerNumber;
@@ -158,6 +160,7 @@ class BankSquare: public Square{
         virtual void yoshiPassesSquare();
     public:
         BankSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
+    int amount(){ return m_amount_stored;}
     private:
         int m_amount_stored;
 };
@@ -188,6 +191,7 @@ protected:
 public:
     Baddies(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
     virtual void doSomething();
+    virtual void impacted();
     
 private:
     Avatar* m_peach;

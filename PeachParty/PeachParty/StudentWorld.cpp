@@ -1,7 +1,9 @@
 #include "StudentWorld.h"
 #include "GameConstants.h"
-#include "Actor.h"//TODO: Should I include Actor.h here?
+#include "Actor.h"
 #include <string>
+#include <sstream>  // defines the type std::ostringstream
+#include <iomanip>
 using namespace std;
 
 GameWorld* createStudentWorld(string assetPath)
@@ -16,6 +18,8 @@ StudentWorld::StudentWorld(string assetPath)
 {
     peach = nullptr;
     yoshi = nullptr;
+//    bankAmount = 0;
+
 }
 int StudentWorld::init()
 {
@@ -99,9 +103,15 @@ int StudentWorld::move()
 {
     // This code is here merely to allow the game to build, run, and terminate after you hit ESC.
     // Notice that the return value GWSTATUS_NOT_IMPLEMENTED will cause our framework to end the game.
-    
-    string stat = "Peach: Coins– " + to_string(peach->getCoins()) + " Stars: " + to_string(peach->getStars());
-    setGameStatText(stat);
+    //P1 Roll: 3 Stars: 2 $$: 15 VOR | Time: 75 | Bank: 9 | P2 Roll: 0 Stars: 1 $$: 22 VOR
+    ostringstream gameStats;
+    int player1Roll = (peach->getTicks() % 8 == 0) ? peach->getTicks()/8 : peach->getTicks()/8 + 1;
+    gameStats << "P1 Roll: " << player1Roll << " Stars: " << peach->getStars() << " $$: " << peach->getCoins() << (peach->showVortex()? " VOR" : "") << " | ";
+    gameStats << "Time: " << timeRemaining() << " | Bank: " << " | ";
+    int player2Roll = (yoshi->getTicks() % 8 == 0) ? yoshi->getTicks()/8 : yoshi->getTicks()/8 + 1;
+    gameStats << "P2 Roll: " << player2Roll << " Stars: " << yoshi->getStars() << " $$: " << yoshi->getCoins() << (yoshi->showVortex()? " VOR" : "");
+//    string stat = "Peach: Coins– " + to_string(peach->getCoins()) + " Stars: " + to_string(peach->getStars());
+    setGameStatText(gameStats.str());
     peach->doSomething();
     yoshi->doSomething();
     for (int it = 0; it < m_actors.size(); it++){
@@ -118,9 +128,34 @@ int StudentWorld::move()
             i--;
         }
     }
-    if (timeRemaining() <= 0)
-		return GWSTATUS_NOT_IMPLEMENTED;
-    
+    if (timeRemaining() <= 0){
+        if (peach->getStars() > yoshi->getStars()){
+            return GWSTATUS_PEACH_WON;
+        }
+        else if (peach->getStars() < yoshi->getStars()){
+            return GWSTATUS_YOSHI_WON;
+        }
+        else if (peach->getCoins() > yoshi->getCoins()){
+            return GWSTATUS_PEACH_WON;
+        }
+        else if (peach->getCoins() < yoshi->getCoins()){
+            return GWSTATUS_YOSHI_WON;
+        }
+        else{
+            int x = randInt(1, 2);
+            switch (x) {
+                case 1:
+                    return GWSTATUS_PEACH_WON;
+                    break;
+                case 2:
+                    return GWSTATUS_YOSHI_WON;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    }
 	return GWSTATUS_CONTINUE_GAME;
 }
 void StudentWorld::cleanUp()
@@ -182,5 +217,18 @@ Vortex* StudentWorld::createVortex(Avatar* x){
     Vortex* v = new Vortex(IID_VORTEX, x1, y, this, dir);
     m_actors.push_back(v);
     return v;
+}
+bool StudentWorld::determineImpact(Vortex* v){
+    for (int i = 0; i < m_actors.size(); i++){
+        if (m_actors[i]->isImpactable() && v->isOverlapping(m_actors[i]->getX(), m_actors[i]->getY())){
+            m_actors[i]->impacted();
+            return true;
+        }
+        if (m_actors[i] == v){
+            return false;
+        }
+        
+    }
+    return false;
 }
 

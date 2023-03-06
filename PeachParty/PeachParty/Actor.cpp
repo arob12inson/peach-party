@@ -384,6 +384,7 @@ Square::Square(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, A
     yoshiOnSquare = false;
 }
 void Square::doSomething(){//TODO: eventually declare as pure virtual
+    
     if (!peachOnSquare && (m_peach->getX() == getX() && m_peach->getY() == getY() && m_peach->getState() == false)){ //If Peach
         peachOnSquare = true;
         peachLandsOnSquare();
@@ -395,17 +396,18 @@ void Square::doSomething(){//TODO: eventually declare as pure virtual
         peachOnSquare = false;
         peachLeavesSquare();
     }
-    if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == false)){ // if yoshi lands on the square
+    if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == false)){ //If yoshi
         yoshiOnSquare = true;
         yoshiLandsOnSquare();
     }
-    else if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == true)){ // if yoshi walks over the square
+    else if (!yoshiOnSquare && (m_yoshi->getX() == getX() && m_yoshi->getY() == getY() && m_yoshi->getState() == true)){// if yoshi walks over the square
         yoshiPassesSquare();
     }
-    else if (yoshiOnSquare && (m_yoshi->getX() != getX() || m_yoshi->getY() != getY())){ // if yoshi leaves the square
+    else if (yoshiOnSquare && (m_yoshi->getX() != getX() || m_yoshi->getY() != getY())){ // If yoshi leaves the square
         yoshiOnSquare = false;
-        yoshiLandsOnSquare();
+        yoshiLeavesSquare();
     }
+
 }
 Avatar* Square::peach(){
     return m_peach;
@@ -436,6 +438,7 @@ void CoinSquare::peachLandsOnSquare() {
 };
 void CoinSquare::yoshiLandsOnSquare(){
     yoshi()->addCoins(m_coinAmount);
+    std::cerr << getX() << getY() << std::endl;
     if (m_coinAmount == 3){
         Board()->playSound(SOUND_GIVE_COIN);
     }
@@ -443,6 +446,7 @@ void CoinSquare::yoshiLandsOnSquare(){
         Board()->playSound(SOUND_TAKE_COIN);
     }
 }
+
 
 //StarSquareImplementations:
 StarSquare::StarSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1) {
@@ -508,6 +512,7 @@ void DroppingsSquare::yoshiLandsOnSquare(){
 BankSquare::BankSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1){
     m_amount_stored = 0;
 }
+
 void BankSquare::peachLandsOnSquare(){
     peach()->addCoins(m_amount_stored);
     m_amount_stored = 0;
@@ -539,7 +544,7 @@ EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar
 }
 void EventSquare::doSomething(){
     if (peachIsOnSquare() == false && (peach()->getX() == getX() && peach()->getY() == getY() && peach()->getState() == false)){ // when peach stops walking and lands directly on top of the square
-        int action = randInt(3, 3);
+        int action = randInt(1, 3);
         if (action == 1){
             bool validSquare = false;
             int x = randInt(0, SPRITE_WIDTH - 1);
@@ -573,11 +578,11 @@ void EventSquare::doSomething(){
     }
     if (yoshiIsOnSquare() == false && (yoshi()->getX() == getX() && yoshi()->getY()  == getY() && yoshi()->getState() == false)){
         int action = randInt(1, 3);
-        if (action == 1){
+        if (action == 1){//Teleport
             bool validSquare = false;
             int x = randInt(0, SPRITE_WIDTH - 1);
             int y = randInt(0, SPRITE_HEIGHT - 1);
-            while (!validSquare){
+            while (!validSquare){//generate random square for Yoshi to travel onto
                 if (Board()->board().getContentsOf(x, y) != Board::empty){
                     validSquare = true;
                 }else{
@@ -590,12 +595,12 @@ void EventSquare::doSomething(){
             Board()->playSound(SOUND_PLAYER_TELEPORT);
 
         }
-        else if (action == 2){
+        else if (action == 2){//Swap
             yoshi()->swap(peach());
             setPeachOnSquare(true);
             setYoshiOnSquare(false);
         }
-        else if (action == 3){
+        else if (action == 3){//Give Vortex
             yoshi()->giveVortex();
             Board()->playSound(SOUND_GIVE_VORTEX);
             setYoshiOnSquare(true);
@@ -658,6 +663,25 @@ void Baddies::doSomething(){
             bowserFinishesMove();
         }
     }
+}
+void Baddies::impacted(){
+    bool validSquare = false;
+    int x = randInt(0, SPRITE_WIDTH - 1);
+    int y = randInt(0, SPRITE_HEIGHT - 1);
+    while (!validSquare){
+        if (Board()->board().getContentsOf(x, y) != Board::empty){
+            validSquare = true;
+        }else{
+            x = randInt(0, SPRITE_WIDTH - 1);
+            y = randInt(0, SPRITE_HEIGHT - 1);
+        }
+    }
+    moveTo(x, y);
+    setTravelDirection(right);
+    setDirection(right);
+    m_pause_counter = 180;
+    setState(WAITING);
+    setTicks(0);
 }
 
 //BooImplementation
@@ -761,7 +785,7 @@ Vortex::Vortex(int name, int x, int y, StudentWorld* gameboard, int dir): Actor(
 }
 
 bool Vortex::isOverlapping(int x, int y){
-    if (std::abs(getX() - x) < 16 || std::abs(getY() - y) < 16){
+    if (std::abs(getX() - x) < 16 && std::abs(getY() - y) < 16){
         return true;
     }
     return false;
@@ -777,6 +801,11 @@ void Vortex::doSomething(){
             setInactive();
             return;
         }
+    }
+    int impacted = Board()->determineImpact(this);
+    if (impacted == true){
+        
+        hitSomething();
     }
 }
 
