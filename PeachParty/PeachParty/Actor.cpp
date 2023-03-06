@@ -542,74 +542,6 @@ void BankSquare::yoshiPassesSquare(){
 EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi) : Square(name, x, y, gameboard, peach, yoshi, right, 1){
     
 }
-//void EventSquare::peachLandsOnSquare(){
-//    int action = randInt(1, 2);
-//    switch (action) {
-//        case 1: {
-//            bool validSquare = false;
-//            int x = randInt(0, SPRITE_WIDTH - 1);
-//            int y = randInt(0, SPRITE_HEIGHT - 1);
-//            while (!validSquare){
-//                if (Board()->board().getContentsOf(x, y) != Board::empty){
-//                    validSquare = true;
-//                }else{
-//                    x = randInt(0, SPRITE_WIDTH - 1);
-//                    y = randInt(0, SPRITE_HEIGHT - 1);
-//                }
-//            }
-//            peach()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
-//            changePeachOnSquare();
-//            changeYoshiOnSquare();
-//            Board()->playSound(SOUND_PLAYER_TELEPORT);
-//            break;
-//        }
-//        case 2:{
-//            peach()->swap(yoshi());
-//            changePeachOnSquare();
-//            changeYoshiOnSquare();
-//            break;
-//        }
-//        case 3:{
-//            //TODO: Implement a vortex
-//            break;
-//        }
-//    }
-//}
-//void EventSquare::yoshiLandsOnSquare(){ //what happens when they are both on the same square?
-//    int action = randInt(1, 3);
-//    switch (action) {
-//        case 1: {
-//            bool validSquare = false;
-//            int x = randInt(0, SPRITE_WIDTH - 1);
-//            int y = randInt(0, SPRITE_HEIGHT - 1);
-//            while (!validSquare){
-//                if (Board()->board().getContentsOf(x, y) != Board::empty){
-//                    validSquare = true;
-//                }else{
-//                    x = randInt(0, SPRITE_WIDTH - 1);
-//                    y = randInt(0, SPRITE_HEIGHT - 1);
-//                }
-//            }
-//            yoshi()->teleport(x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
-//            changePeachOnSquare();
-//            changeYoshiOnSquare();
-//            Board()->playSound(SOUND_PLAYER_TELEPORT);
-//            break;
-//        }
-//        case 2:{
-//            yoshi()->swap(peach());// TODO: why does this run when yoshi moves?
-//            changePeachOnSquare();
-//            changeYoshiOnSquare();
-//            break;
-//        }
-//        case 3:{
-//            //TODO: Implement a vortex
-//            break;
-//        }
-//    }
-//}
-//
-
 void EventSquare::doSomething(){
     if (peachIsOnSquare() == false && (peach()->getX() == getX() && peach()->getY() == getY() && peach()->getState() == false)){ // when peach stops walking and lands directly on top of the square
         int action = randInt(1, 3);
@@ -775,4 +707,39 @@ void Boo::peachLandsOnBaddy(){
 
 void Boo::yoshiLandsOnBaddy(){
     peachLandsOnBaddy(); // behavior is the same 
+}
+
+//Bowser Implementations
+Bowser::Bowser(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi): Baddies(name, x, y, gameboard, peach, yoshi)
+{
+}
+
+void Bowser::whenPauseBecomesZero(){
+    setTravelDistance(randInt(1, 10));
+    setTicks(getTravelDistance() * 8);
+    do {
+        changeDirections(randInt(0, 3) * 90);
+    } while(!validDirection());
+    
+    setState(WALKING);
+}
+void Bowser::yoshiLandsOnBaddy(){
+    int coinFlip = randInt(1, 2);
+    if (coinFlip == 1){
+        yoshi()->addCoins(-1 * yoshi()->getCoins());
+        Board()->playSound(SOUND_BOWSER_ACTIVATE);
+    }
+}
+void Bowser::peachLandsOnBaddy(){
+    int coinFlip = randInt(1,2);
+    if (coinFlip == 1){
+        peach()->addCoins(-1 * peach()->getCoins());
+        Board()->playSound(SOUND_BOWSER_ACTIVATE);
+    }
+}
+void Bowser::bowserFinishesMove(){
+    int action = randInt(1, 4);
+    if (action == 4){//25% chance action is 4
+        
+    }
 }

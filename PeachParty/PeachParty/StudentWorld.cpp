@@ -82,7 +82,7 @@ int StudentWorld::init()
                     m_actors.push_back(new StarSquare(IID_STAR_SQUARE, width, height, this, peach, yoshi));
                     break;
                 case Board::bowser:
-                    m_actors.push_back(new Baddies(IID_BOWSER, width, height, this, peach, yoshi));
+                    m_actors.push_back(new Bowser(IID_BOWSER, width, height, this, peach, yoshi));
                     m_actors.push_back(new CoinSquare(IID_BLUE_COIN_SQUARE, width, height, this, 3, peach, yoshi));
                     break;
                 case Board::boo:
@@ -121,7 +121,7 @@ void StudentWorld::cleanUp()
     peach = nullptr;
     delete yoshi;
     yoshi = nullptr;
-    vector<Actor*>::iterator it = m_actors.begin(); //TODO: Why don't you need an std::vector?
+    vector<Actor*>::iterator it = m_actors.begin(); 
     for (; it != m_actors.end(); it++){
         delete *it;
         *it = nullptr;

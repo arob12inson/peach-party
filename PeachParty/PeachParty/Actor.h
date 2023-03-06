@@ -196,4 +196,17 @@ private:
     virtual void peachLandsOnBaddy();
 };
 
+class Bowser: public Baddies{
+protected:
+public:
+    Bowser(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
+private:
+    virtual void whenPauseBecomesZero();
+    virtual void yoshiLandsOnBaddy();
+    virtual void peachLandsOnBaddy();
+    virtual void bowserFinishesMove();
+
+};
+
+
 #endif // ACTOR_H_
