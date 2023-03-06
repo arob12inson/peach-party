@@ -110,8 +110,8 @@ int StudentWorld::move()
         it++;
     }
     
-    if (timeRemaining() <= 0)
-		return GWSTATUS_NOT_IMPLEMENTED;
+//    if (timeRemaining() <= 0)
+//		return GWSTATUS_NOT_IMPLEMENTED;
     
 	return GWSTATUS_CONTINUE_GAME;
 }

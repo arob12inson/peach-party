@@ -122,7 +122,15 @@ void MovingActor::changeDirections(){
     }
     else if (m_traveling_direction == -1){
         setDirection(right);
-        m_traveling_direction = right;
+        bool valid = false;
+        while (!valid){
+            int direction = randInt(0, 3) * 90;
+            setTravelDirection(direction);
+            valid = validDirection();
+        }
+        if (getTravelDirection() == left){
+            setDirection(left);
+        }
     }
 }
 void MovingActor::changeDirections(int d){
@@ -274,21 +282,6 @@ void Avatar::doSomething(){
         else if (validDirection() == false){//Else if the Avatar can't continue moving forward in its current direction
             changeDirections();
         }
-//        switch (getTravelDirection()) {
-//            case left:
-//                moveTo(getX()-2, getY());//Move two pixels in the walk direction
-//                break;
-//            case right:
-//                moveTo(getX()+2, getY());//Move two pixels in the walk direction
-//                break;
-//            case up:
-//                moveTo(getX(), getY()+2);//Move two pixels in the walk direction
-//
-//                break;
-//            case down:
-//                moveTo(getX(), getY()-2);//Move two pixels in the walk direction
-//                break;
-//        }
         makeMove();
         can_be_teleported = true; // When actor moves from the square it was on, it should be able to teleport again (Only relevant when traveling away from an event square
         setTicks(getTicks()-1);//Decrement the ticks_to_move count by 1.
@@ -371,14 +364,8 @@ void Avatar::swap(Avatar* other){ //TODO: Make sure that it doesn't reactivate s
         
         can_be_teleported = false;
         other->changeTeleportationStatus(false);
-        std::cerr << "Peach got teleported" << std::endl;
-    }
 
-    
-    // when teleported
-//        can_be_teleported = false; // breaks because at the very next move call, can_be_teleported is changed true
-//        other->changeTeleportationStatus();
-    
+    }
 } //TODO: problem– if peach and yoshi reach event square at the same time, then only peach's will run
 
 //SquareClass
@@ -544,7 +531,7 @@ EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar
 }
 void EventSquare::doSomething(){
     if (peachIsOnSquare() == false && (peach()->getX() == getX() && peach()->getY() == getY() && peach()->getState() == false)){ // when peach stops walking and lands directly on top of the square
-        int action = randInt(1, 3);
+        int action = 1/*randInt(1, 3)*/;
         if (action == 1){
             bool validSquare = false;
             int x = randInt(0, SPRITE_WIDTH - 1);
@@ -632,10 +619,6 @@ void Baddies::doSomething(){
         m_pause_counter--;
         if (m_pause_counter == 0){
             whenPauseBecomesZero();
-            //for testing
-//            setState(WALKING);
-//            m_travel_distance = 2;
-//            setTicks(2*8);
         }
     }
     if (getState() == WALKING){
@@ -731,7 +714,7 @@ void Bowser::yoshiLandsOnBaddy(){
     }
 }
 void Bowser::peachLandsOnBaddy(){
-    int coinFlip = randInt(1,2);
+    int coinFlip = randInt(1,1);
     if (coinFlip == 1){
         peach()->addCoins(-1 * peach()->getCoins());
         Board()->playSound(SOUND_BOWSER_ACTIVATE);
