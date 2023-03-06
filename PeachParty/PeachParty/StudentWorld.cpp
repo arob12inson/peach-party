@@ -104,14 +104,22 @@ int StudentWorld::move()
     setGameStatText(stat);
     peach->doSomething();
     yoshi->doSomething();
-    vector<Actor*>::iterator it = m_actors.begin();
-    while (it != m_actors.end()){
-        (*it)->doSomething();
-        it++;
+    for (int it = 0; it < m_actors.size(); it++){
+        if (m_actors[it]->isInactive() == false)
+            m_actors[it]->doSomething();
     }
     
-//    if (timeRemaining() <= 0)
-//		return GWSTATUS_NOT_IMPLEMENTED;
+    //cleaning up deadCharacters
+    
+    for (int i = 0; i < m_actors.size(); i++){
+        if (m_actors[i]->isInactive() == true){
+            delete (m_actors[i]);
+            m_actors.erase(m_actors.begin() + i);
+            i--;
+        }
+    }
+    if (timeRemaining() <= 0)
+		return GWSTATUS_NOT_IMPLEMENTED;
     
 	return GWSTATUS_CONTINUE_GAME;
 }
@@ -135,5 +143,15 @@ Board& StudentWorld::board()
 StudentWorld::~StudentWorld()
 {
     cleanUp();
+}
+void StudentWorld::createDroppingSquare(int x, int y){
+    Actor* ds = new DroppingsSquare(IID_DROPPING_SQUARE, x, y, this, peach, yoshi);
+    for (int i = 0; i < m_actors.size(); i++){
+        if (m_actors[i]->getX() == x && m_actors[i]->getY() == y){
+            m_actors[i]->setInactive();
+
+        }
+    }
+    m_actors.push_back(ds);
 }
 

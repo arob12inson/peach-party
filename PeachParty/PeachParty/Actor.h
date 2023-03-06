@@ -9,16 +9,15 @@ class StudentWorld;
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 class Actor: public GraphObject{
     protected:
-        virtual bool isInactive(); //TODO: for baddies, this should always return true (since you don't want to destroy the baddies)
-        void setInactive();
         void setImpactable();
-        bool isImpactable();
-        StudentWorld* Board();
-        
+        StudentWorld* Board(); 
     public:
         Actor(int name, int x, int y, StudentWorld* gameboard, int dir = right, int depth = 0, double size = 1.0);
-        virtual void doSomething() {};//TODO: should this be a pure virtual function?
-    virtual ~Actor() {};
+        virtual void doSomething() = 0;//TODO: should this be a pure virtual function?
+        virtual ~Actor() {};
+        virtual bool isInactive(); //TODO: for baddies, this should always return true (since you don't want to destroy the baddies)
+        void setInactive();
+        bool isImpactable();
     private:
         bool inactive;
         bool impactable;
@@ -158,6 +157,7 @@ class EventSquare: public Square{
  
 class Baddies: public MovingActor{
 protected:
+    virtual bool isInactive(){return false;}
     int getTravelDistance() {return m_travel_distance;}
     void setTravelDistance(int d) {m_travel_distance = d;}
     int getPauseCounter() {return m_pause_counter;}
@@ -205,6 +205,7 @@ private:
     virtual void yoshiLandsOnBaddy();
     virtual void peachLandsOnBaddy();
     virtual void bowserFinishesMove();
+    
 
 };
 

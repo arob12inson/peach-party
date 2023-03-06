@@ -731,7 +731,7 @@ void Bowser::peachLandsOnBaddy(){
 void Bowser::bowserFinishesMove(){
     int action = randInt(1, 4);
     if (action == 4){//25% chance action is 4
-        
+        Board()->createDroppingSquare(getX(), getY());
     }
 }
 
