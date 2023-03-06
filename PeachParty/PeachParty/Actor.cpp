@@ -127,6 +127,12 @@ void MovingActor::changeDirections(){
 }
 void MovingActor::changeDirections(int d){
     m_traveling_direction = d;
+    if (d == left){
+        setDirection(180);
+    }
+    else {
+        setDirection(0);
+    }
 }// Repetitive function with setTravelDirection
 bool MovingActor::isOnTopOfSquare(){
     return (getX() % 16 == 0 && getY() % 16 == 0);
@@ -319,6 +325,10 @@ void Avatar::addStars(){
     m_stars++;
 }
 void Avatar::subtractStars(){
+    if (m_stars <= 0){
+        m_stars = 0;
+        return;
+    }
     m_stars--;
 }
 int Avatar::getCoins(){
@@ -691,9 +701,9 @@ void Baddies::doSomething(){
         if (m_pause_counter == 0){
             whenPauseBecomesZero();
             //for testing
-            setState(WALKING);
-            m_travel_distance = 2;
-            setTicks(2*8); 
+//            setState(WALKING);
+//            m_travel_distance = 2;
+//            setTicks(2*8);
         }
     }
     if (getState() == WALKING){
@@ -714,4 +724,55 @@ void Baddies::doSomething(){
             bowserFinishesMove();
         }
     }
+}
+
+//BooImplementation
+Boo::Boo(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi): Baddies(name, x, y, gameboard, peach, yoshi)
+{
+    
+}
+void Boo::whenPauseBecomesZero(){
+    setTravelDistance(randInt(1, 3));
+    setTicks(getTravelDistance() * 8);
+    do {
+        changeDirections(randInt(0, 3) * 90);
+    } while(!validDirection());
+    
+    setState(WALKING);
+}
+void Boo::peachLandsOnBaddy(){
+    Board()->playSound(SOUND_BOO_ACTIVATE);
+    int action = randInt(1, 2);
+    switch (action) {
+        case 1:{
+            int peachCoins = peach()->getCoins();
+            int yoshiCoins = yoshi()->getCoins();
+            //remove all of peach's coins
+            peach()->addCoins(-peachCoins);
+            yoshi()->addCoins(-yoshiCoins);
+            peach()->addCoins(yoshiCoins);
+            yoshi()->addCoins(peachCoins);
+            break;
+        }
+        case 2:{
+            int peachStars = peach()->getStars();
+            int yoshiStars = yoshi()->getStars();
+            for (int i = 0; i < peachStars; i++){ //clear peach's stars
+                peach()->subtractStars();
+            }
+            for (int i = 0; i < yoshiStars; i++){ //clear yoshi's stars
+                yoshi()->subtractStars();
+            }
+            for (int i = 0; i < peachStars; i++){ // add # of peach stars to yoshi
+                yoshi()->addStars();
+            }
+            for(int i = 0; i < yoshiStars; i++){ // add # of yoshi stars to peach
+                peach()->addStars();
+            }
+        }
+    }
+}
+
+void Boo::yoshiLandsOnBaddy(){
+    peachLandsOnBaddy(); // behavior is the same 
 }

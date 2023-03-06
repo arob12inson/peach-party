@@ -158,22 +158,42 @@ class EventSquare: public Square{
  
 class Baddies: public MovingActor{
 protected:
+    int getTravelDistance() {return m_travel_distance;}
+    void setTravelDistance(int d) {m_travel_distance = d;}
+    int getPauseCounter() {return m_pause_counter;}
+    void setPauseCounter(int p) {m_pause_counter = p;}
+    bool isPeachOnBaddy() {return peachOnBaddy;}
+    void setPeachOnBaddy(int v) {peachOnBaddy = v;}
+    bool isYoshiOnBaddy() {return yoshiOnBaddy;}
+    void setYoshiOnBaddy(int v) {yoshiOnBaddy = v;}
+    Avatar* peach() {return m_peach;}
+    Avatar* yoshi() {return m_yoshi;}
+    
 public:
     Baddies(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
     virtual void doSomething();
+    
 private:
     Avatar* m_peach;
     Avatar* m_yoshi;
     int m_travel_distance;
     int m_pause_counter;
-    int peachOnBaddy;
-    int yoshiOnBaddy;
-private:
+    bool peachOnBaddy;
+    bool yoshiOnBaddy;
     virtual void whenPauseBecomesZero(){};
     virtual void yoshiLandsOnBaddy() {};
     virtual void peachLandsOnBaddy() {};
     virtual void bowserFinishesMove() {};
 };
 
+class Boo: public Baddies{
+protected:
+public:
+    Boo(int name, int x, int y, StudentWorld* gameboard, Avatar* peach, Avatar* yoshi);
+private:
+    virtual void whenPauseBecomesZero();
+    virtual void yoshiLandsOnBaddy();
+    virtual void peachLandsOnBaddy();
+};
 
 #endif // ACTOR_H_
