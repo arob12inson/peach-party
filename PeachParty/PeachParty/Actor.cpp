@@ -1,5 +1,6 @@
 #include "Actor.h"
 #include "StudentWorld.h"
+#include <cmath>
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
 //Actor definitions
@@ -226,6 +227,8 @@ MovingActor(name, x, y, gameboard){
     m_coins = 0;
     m_stars = 0;
     can_be_teleported = true;
+    m_vortex = nullptr;
+    hasVortex = false;
 }
 void Avatar::doSomething(){
     if (getState() == WAITING){
@@ -234,6 +237,11 @@ void Avatar::doSomething(){
             if (action == ACTION_ROLL){
                 setTicks(randInt(1, 10) * 8);
                 setState(WALKING);
+            }
+            else if(action == ACTION_FIRE && hasVortex){
+                m_vortex = Board()->createVortex(this);
+                hasVortex = false;
+                Board()->playSound(SOUND_PLAYER_FIRE);
             }
             else{
                 return;
@@ -531,7 +539,7 @@ EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar
 }
 void EventSquare::doSomething(){
     if (peachIsOnSquare() == false && (peach()->getX() == getX() && peach()->getY() == getY() && peach()->getState() == false)){ // when peach stops walking and lands directly on top of the square
-        int action = randInt(1, 3);
+        int action = randInt(3, 3);
         if (action == 1){
             bool validSquare = false;
             int x = randInt(0, SPRITE_WIDTH - 1);
@@ -553,6 +561,11 @@ void EventSquare::doSomething(){
             setPeachOnSquare(false);
             setYoshiOnSquare(true);
             
+        }
+        else if (action == 3){
+            peach()->giveVortex();
+            Board()->playSound(SOUND_GIVE_VORTEX);
+            setPeachOnSquare(true);
         }
     }
     else if (peachIsOnSquare() == true && (peach()->getX() != getX() || peach()->getY() != getY()) && peach()->getState() == true){
@@ -582,6 +595,11 @@ void EventSquare::doSomething(){
             setPeachOnSquare(true);
             setYoshiOnSquare(false);
         }
+        else if (action == 3){
+            yoshi()->giveVortex();
+            Board()->playSound(SOUND_GIVE_VORTEX);
+            setYoshiOnSquare(true);
+        }
     }
     else if (yoshiIsOnSquare() == true && (yoshi()->getX() != getX() || yoshi()->getY()  != getY()) && yoshi()->getState() == true){
         setYoshiOnSquare(false);
@@ -597,6 +615,7 @@ Baddies::Baddies(int name, int x, int y, StudentWorld* gameboard, Avatar* peach,
     setImpactable();
     peachOnBaddy = false;
     yoshiOnBaddy = false;
+    setImpactable();
     std::cerr << "Is impactable: " << isImpactable() << std::endl;
 }
 
@@ -735,3 +754,33 @@ void Bowser::bowserFinishesMove(){
     }
 }
 
+//Vortex implementation;
+Vortex::Vortex(int name, int x, int y, StudentWorld* gameboard, int dir): Actor(name, x, y, gameboard, dir)
+{
+    travelDirection = dir;
+}
+
+bool Vortex::isOverlapping(int x, int y){
+    if (std::abs(getX() - x) < 16 || std::abs(getY() - y) < 16){
+        return true;
+    }
+    return false;
+}
+
+void Vortex::doSomething(){
+    if (isInactive()){
+        return;
+    }
+    else{
+        moveAtAngle(travelDirection, 2);
+        if (getX() < 0 || getX() >= VIEW_WIDTH || getY() < 0 || getY() >= VIEW_WIDTH ){// Set inactive if it leave the boundary
+            setInactive();
+            return;
+        }
+    }
+}
+
+void Vortex::hitSomething(){
+    setInactive();
+    Board()->playSound(SOUND_HIT_BY_VORTEX);
+}

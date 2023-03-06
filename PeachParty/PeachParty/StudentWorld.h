@@ -10,6 +10,7 @@
 
 class Actor;
 class Avatar;
+class Vortex;
 
 class StudentWorld : public GameWorld
 {
@@ -21,6 +22,7 @@ public:
     Board& board();//will this cause performance issues? Pointer vs reference?
     virtual ~StudentWorld();
     void createDroppingSquare(int x, int y);
+    Vortex* createVortex(Avatar* x);
     
 private:
     Board m_board;

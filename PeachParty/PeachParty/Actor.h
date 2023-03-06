@@ -24,6 +24,18 @@ class Actor: public GraphObject{
         StudentWorld* m_gameboard;
         
 };
+class Vortex: public Actor{
+protected:
+public:
+    Vortex(int name, int x, int y, StudentWorld* gameboard, int dir);
+    virtual void doSomething();
+    bool isOverlapping(int x, int y);
+    void hitSomething();
+    
+private:
+    int travelDirection;
+    
+};
 
 class MovingActor: public Actor{
     protected:
@@ -34,7 +46,6 @@ class MovingActor: public Actor{
         void setState(bool state);
         void setTravelDirection(int d);
         int getTicks();
-        int getTravelDirection();
         bool validDirection();
         void changeDirections();
         void changeDirections(int d);
@@ -48,6 +59,7 @@ class MovingActor: public Actor{
         MovingActor(int name, int x, int y, StudentWorld* gameboard);
         virtual void doSomething() {};
         bool getState();
+        int getTravelDirection();
     private:
         int m_ticks_to_move;
         bool m_state;
@@ -68,7 +80,9 @@ class Avatar: public MovingActor{
         int getCoins();
         int getStars();
         bool canBeTeleported();
-    void changeTeleportationStatus(bool value);
+        void changeTeleportationStatus(bool value);
+        Vortex* vortex(){return m_vortex;}
+        void giveVortex(){hasVortex = true;};
         
     private:
         int m_playerNumber;
@@ -76,7 +90,8 @@ class Avatar: public MovingActor{
         int m_stars;
         bool can_be_teleported;
         const int JUST_TELEPORTED = -1; // When we teleport, we set the direction to this in order to make user pick a valid direction
-        
+    Vortex* m_vortex;
+    bool hasVortex; 
     
 };
 
@@ -102,6 +117,7 @@ class Square: public Actor{
         Avatar* m_yoshi;
         bool peachOnSquare;
         bool yoshiOnSquare;
+        
 };
 
 class CoinSquare: public Square{
@@ -205,8 +221,8 @@ private:
     virtual void yoshiLandsOnBaddy();
     virtual void peachLandsOnBaddy();
     virtual void bowserFinishesMove();
-    
-
 };
+
+
 
 #endif // ACTOR_H_

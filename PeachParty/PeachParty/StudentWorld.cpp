@@ -154,4 +154,33 @@ void StudentWorld::createDroppingSquare(int x, int y){
     }
     m_actors.push_back(ds);
 }
+Vortex* StudentWorld::createVortex(Avatar* x){
+    int x1 = x->getX();
+    int y = x->getY();
+    int dir = x->getTravelDirection();
+    int switchDir = x->getTravelDirection();
+    switch (switchDir) {
+        case 180:
+            x1-=2;
+            break;
+        case 0:
+            x1+= 2;
+            break;
+        case 90:
+            y+=2;
+            break;
+        case 270:
+            y -=2;
+            break;
+        case -1:
+            dir = 0;
+            break;
+        default:
+            break;
+    }
+    
+    Vortex* v = new Vortex(IID_VORTEX, x1, y, this, dir);
+    m_actors.push_back(v);
+    return v;
+}
 
