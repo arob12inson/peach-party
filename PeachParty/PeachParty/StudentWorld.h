@@ -20,6 +20,7 @@ public:
     virtual void cleanUp();
     Board& board();//will this cause performance issues? Pointer vs reference?
     virtual ~StudentWorld();
+    void createDroppingSquare(int x, int y);
     
 private:
     Board m_board;

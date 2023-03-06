@@ -531,7 +531,7 @@ EventSquare::EventSquare(int name, int x, int y, StudentWorld* gameboard, Avatar
 }
 void EventSquare::doSomething(){
     if (peachIsOnSquare() == false && (peach()->getX() == getX() && peach()->getY() == getY() && peach()->getState() == false)){ // when peach stops walking and lands directly on top of the square
-        int action = 1/*randInt(1, 3)*/;
+        int action = randInt(1, 3);
         if (action == 1){
             bool validSquare = false;
             int x = randInt(0, SPRITE_WIDTH - 1);
@@ -711,13 +711,21 @@ void Bowser::yoshiLandsOnBaddy(){
     if (coinFlip == 1){
         yoshi()->addCoins(-1 * yoshi()->getCoins());
         Board()->playSound(SOUND_BOWSER_ACTIVATE);
+        int numStars = yoshi()->getStars();//count number of coins there are
+        for (int i = 0; i < numStars; i++){ // decrement coins that number of times
+            yoshi()->subtractStars();
+        }
     }
 }
 void Bowser::peachLandsOnBaddy(){
-    int coinFlip = randInt(1,1);
-    if (coinFlip == 1){
+    int coinFlip = randInt(1,2);
+    if (coinFlip == 1){//50% chance all coins are removed
         peach()->addCoins(-1 * peach()->getCoins());
         Board()->playSound(SOUND_BOWSER_ACTIVATE);
+        int numStars = peach()->getStars();
+        for (int i = 0; i < numStars; i++){
+            peach()->subtractStars();
+        }
     }
 }
 void Bowser::bowserFinishesMove(){
@@ -726,3 +734,4 @@ void Bowser::bowserFinishesMove(){
         
     }
 }
+
